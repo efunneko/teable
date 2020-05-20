@@ -12,23 +12,63 @@ const cellValToClass = {
   '3':  '-tripleLetter'
 };
 
+const cellValToText = {
+  '-3': 'Triple Word Score',
+  '-2': 'Double Word Score',
+  '1':  '',
+  '2':  'Double Letter Score',
+  '3':  'Triple Letter Score'
+};
 
 //
 // Board - Renders and manages the playing surface
 //
 export class Board extends jst.Component {
-  constructor(app) {
+  constructor(app, width, height) {
     super();
     this.app          = app;
+    this.height       = height;
+    this.width        = width;
+    this.leftWidth    = Math.max(width * 0.2, 200);
+    this.boardWidth   = width - this.leftWidth;
+    this.boardHeight  = height;
   }
 
   cssLocal() {
-
-    let cellSide = 30;
+    
+    let cellSide = Math.min(this.boardWidth/15, this.boardHeight/15);
+    console.log("side;", cellSide, this.boardHeight, this.boardWidth)
     return {
+      board$c: {
+        fontFamily: "'DM Mono', monospace",
+        display: "grid",
+        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px`
+      },
+      sideTitle$c: {
+        fontSize$px: this.leftWidth/10
+
+      },
+      mainBoard$c: {
+        display: "grid",
+        gridTemplateColumns: `repeat(15, ${cellSide + 2}px)`,
+        gridRowGap$px: 2
+      },
+      boardCellTd$c: {
+        padding$px: 0
+      },
       boardCell$c: {
+        padding$px: 0,
         height$px: cellSide,
-        width$px:  cellSide
+        width$px:  cellSide,
+        maxHeight$px: cellSide,
+        minHeight$px: cellSide,
+        overflow:  "hidden",
+        fontSize$px: 9,
+        textAlign: "center",
+        fontWeight: "bold"
+      },
+      boardCellText$c: {
+        verticalAlign: 'middle',
       },
       normal$c: {
         backgroundColor: "#cec7aa"
@@ -84,12 +124,12 @@ export class Board extends jst.Component {
       ),
       jst.$div(
         {cn: "-mainBoard"},
-        jst.$table(
-          {cn: "-mainBoardTable"},
-          rules.board.map(
-            row => jst.$tr(row.map(
-              cell => jst.$td({cn: cellValToClass[cell] + " -boardCell"})
-            ))
+        rules.board.map(
+          row => row.map(
+            cell => jst.$div(
+              {cn: cellValToClass[cell] + " -boardCell"},
+              jst.$span({cn: "-boardCellText"}, cellValToText[cell])
+            )
           )
         )
       )

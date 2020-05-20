@@ -12,9 +12,12 @@ export class App extends jst.Component {
     this.title        = "Teable";
     this.alerts       = [];
     this.brokerInfo   = undefined;
-                      
-    this.header       = new Header(this);
-    this.body         = new Body(this);
+    
+    this.width        = window.innerWidth;
+    this.height       = window.innerHeight;
+
+    this.header       = new Header(this, this.width, 150);
+    this.body         = new Body(this, this.width, this.height - 150);
     this.splash       = new Splash(this);
     this.communicator = new Communicator(this,
                                          {callbacks:

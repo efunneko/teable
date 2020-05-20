@@ -6,10 +6,10 @@ import {Board}      from "./board.js";
 // Body - Handles all that is the body
 //
 export class Body extends jst.Component {
-  constructor(app) {
+  constructor(app, height, width) {
     super();
     this.app          = app;
-    this.board        = new Board(app, this);
+    this.board        = new Board(app, height, width);
     this.results      = [];
     this.players      = {};
   }
