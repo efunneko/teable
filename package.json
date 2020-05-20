@@ -1,0 +1,36 @@
+{
+  "name": "Teable",
+  "version": "0.0.1",
+  "description": "A word game over the net",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production",
+    "watch": "./node_modules/.bin/webpack-dev-server --mode=development --watch"
+  },
+  "keywords": [
+    "minecraft",
+    "snooper"
+  ],
+  "author": "Edward and Charlotte Funnekotter",
+  "license": "MIT",
+  "browser": {
+    "child_process": false
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.2"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.6.0",
+    "jayesstee": "*",
+    "mqtt": "^3.0.0",
+    "uuid": "^3.3.3"
+  }
+}
