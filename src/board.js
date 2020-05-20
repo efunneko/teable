@@ -45,8 +45,13 @@ export class Board extends jst.Component {
         gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px`
       },
       sideTitle$c: {
-        fontSize$px: this.leftWidth/10
-
+        margin$px: 4,
+        fontSize$px: this.leftWidth/10,
+        borderWidth$px: 3,
+        borderColor: "black",
+        borderStyle: "solid",
+        width$px: this.leftWidth/10,
+        height$px: this.leftWidth/10,
       },
       mainBoard$c: {
         display: "grid",
@@ -128,7 +133,9 @@ export class Board extends jst.Component {
           row => row.map(
             cell => jst.$div(
               {cn: cellValToClass[cell] + " -boardCell"},
-              jst.$span({cn: "-boardCellText"}, cellValToText[cell])
+              //jst.$span({cn: "-boardCellText"}, 
+              cellValToText[cell]
+              //)
             )
           )
         )
