@@ -56,7 +56,6 @@ export class Board extends jst.Component {
         width$px: this.leftWidth/10,
         height$px: this.leftWidth/10,
         padding$px: 10,
-        //textAlign: "left",
       },
       mainBoard$c: {
         display: "grid",
@@ -116,7 +115,7 @@ export class Board extends jst.Component {
         {cn: "-leftBar"},
 
         ["T", "E", "A", "B", "L", "E"].map(
-          letter => new Tile(letter, this.leftWidth/8)
+          letter => new Tile(letter, this.leftWidth/7)
         ),
         ["LETTER", "DISTRIBUTION"].map(
           l => jst.$div({cn: "-sideDistribution"}, l)
