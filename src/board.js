@@ -1,6 +1,7 @@
 import {jst}     from "jayesstee";
 import css       from "./cssCommon";
 import rules     from "./rules";
+import {Tile}    from "./tile";
 
 
 
@@ -19,6 +20,8 @@ const cellValToText = {
   '2':  'Double Letter Score',
   '3':  'Triple Letter Score'
 };
+
+const subScript = [1, 3];
 
 //
 // Board - Renders and manages the playing surface
@@ -52,6 +55,8 @@ export class Board extends jst.Component {
         borderStyle: "solid",
         width$px: this.leftWidth/10,
         height$px: this.leftWidth/10,
+        padding$px: 10,
+        //textAlign: "left",
       },
       mainBoard$c: {
         display: "grid",
@@ -93,6 +98,9 @@ export class Board extends jst.Component {
       tripleWord$c$before: {
         backgroundColor: "#fc6852"
       },
+      subScript$c: {
+        fontSize: "30%"
+      }
     };
   }
   
@@ -108,7 +116,7 @@ export class Board extends jst.Component {
         {cn: "-leftBar"},
 
         ["T", "E", "A", "B", "L", "E"].map(
-          l => jst.$div({cn: "-sideTitle"}, l)
+          letter => new Tile(letter, this.leftWidth/8)
         ),
         ["LETTER", "DISTRIBUTION"].map(
           l => jst.$div({cn: "-sideDistribution"}, l)

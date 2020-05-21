@@ -68,7 +68,7 @@ export class Header extends jst.Component {
         {id: "-headerLeftArea"},
         jst.$div(
           {id: "-headerTitle", cn: "-headerItem"},
-          this.app.getTitle()),
+          this.app.getTitle(), 'hi'),
         jst.$div(
           {id: "-headerHost", cn: "-headerItem", events: {click: e => this.changeHost()}}
         )
