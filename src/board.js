@@ -107,6 +107,13 @@ export class Board extends jst.Component {
       },
       subScript$c: {
         fontSize: "30%"
+      },
+      sideDistribution$c: {
+        marginTop$px: this.cellSize*1.2,
+        fontSize$px: this.cellSize/4
+      },
+      letterDistributionTable$c: {
+        height$px: this.cellSize*6.5
       }
     };
   }
@@ -128,18 +135,24 @@ export class Board extends jst.Component {
             letter => new Tile(letter, this.cellSize)
           )
         ),
+
+        jst.$div(
+          {cn: "-sideDistribution"},
         ["LETTER", "DISTRIBUTION"].map(
-          l => jst.$div({cn: "-sideDistribution"}, l)
-        ),
-        jst.$table(
+          l => jst.$div(l)
+        )),
+
+        jst.$div(
           {cn: "-letterDistributionTable"},
-          new Array(9).fill().map(
-            (entry, i) => jst.$tr(
-              jst.$td(`${String.fromCharCode(65+i)} - ${rules.distribution[String.fromCharCode(65+i)]}`),
-              jst.$td(`${String.fromCharCode(74+i)} - ${rules.distribution[String.fromCharCode(74+i)]}`),
-              jst.if(i != 8, jst.$td(`${String.fromCharCode(83+i)} - ${rules.distribution[String.fromCharCode(83+i)]}`))
+          jst.$table(
+            {cn: "-letterDistribution"},
+            new Array(9).fill().map(
+              (entry, i) => jst.$tr(
+                jst.$td(`${String.fromCharCode(65+i)} - ${rules.distribution[String.fromCharCode(65+i)]}`),
+                jst.$td(`${String.fromCharCode(74+i)} - ${rules.distribution[String.fromCharCode(74+i)]}`),
+                jst.if(i != 8, jst.$td(`${String.fromCharCode(83+i)} - ${rules.distribution[String.fromCharCode(83+i)]}`))
             ))
-        ),
+        )),
         jst.$div(
           {id: "-letterDistributionBlanks"},
           "Blanks - 2"
@@ -172,6 +185,4 @@ export class Board extends jst.Component {
 
     this.refresh();
   }
-
-  
 }
