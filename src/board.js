@@ -30,13 +30,22 @@ export class Board extends jst.Component {
   constructor(app, width, height) {
     super();
     this.app          = app;
+    this.tiles        = new Array(15).fill().map(col => new Array(15).fill());
+
+    this.tiles[5][5]  = new Tile("C", 10);
+    this.tiles[6][5]  = new Tile("H", 10);
+    this.tiles[7][5]  = new Tile("A", 10);
+    this.tiles[8][5]  = new Tile("R", 10);
+    this.tiles[9][5]  = new Tile("L", 10);
+    this.tiles[10][5] = new Tile("O", 10);
+    this.tiles[11][5] = new Tile("T", 10);
+    this.tiles[12][5] = new Tile("T", 10);
+    this.tiles[13][5] = new Tile("E", 10);
     this.resize(width, height);
   }
 
   cssLocal() {
     
-    let cellSide = Math.min(this.boardWidth/15, this.boardHeight/15);
-    console.log("side;", cellSide, this.boardHeight, this.boardWidth)
     return {
       board$c: {
         fontFamily: "'DM Mono', monospace",
@@ -51,25 +60,32 @@ export class Board extends jst.Component {
       },
       mainBoard$c: {
         display: "grid",
-        gridTemplateColumns: `repeat(15, ${cellSide + 2}px)`,
-        gridRowGap$px: 2
+        gridTemplateColumns: `repeat(15, ${this.cellSize + 2}px)`,
+        gridRowGap$px: 2,
+        gridAutoRows: 'minmax(min-content, max-content)',
       },
       boardCellTd$c: {
         padding$px: 0
       },
       boardCell$c: {
+        position: "relative",
         padding$px: 0,
-        height$px: cellSide,
-        width$px:  cellSide,
-        maxHeight$px: cellSide,
-        minHeight$px: cellSide,
+        height$px: this.cellSize,
+        width$px:  this.cellSize,
+        maxHeight$px: this.cellSize,
+        minHeight$px: this.cellSize,
         overflow:  "hidden",
-        fontSize$px: 9,
+        fontSize$px: this.cellSize*0.22,
         textAlign: "center",
         fontWeight: "bold"
       },
       boardCellText$c: {
         verticalAlign: 'middle',
+      },
+      boardTile$c: {
+        position: "absolute",
+        left$px: 0,
+        top$px: 0
       },
       normal$c: {
         backgroundColor: "#cec7aa"
@@ -132,12 +148,11 @@ export class Board extends jst.Component {
       jst.$div(
         {cn: "-mainBoard"},
         rules.board.map(
-          row => row.map(
-            cell => jst.$div(
+          (row, rowIndex) => row.map(
+            (cell, colIndex) => jst.$div(
               {cn: cellValToClass[cell] + " -boardCell"},
-              //jst.$span({cn: "-boardCellText"}, 
-              cellValToText[cell]
-              //)
+              cellValToText[cell],
+              jst.$div({cn: "-boardTile"}, this.tiles[colIndex][rowIndex])
             )
           )
         )
@@ -146,11 +161,15 @@ export class Board extends jst.Component {
   }
 
   resize(width, height) {
-    this.width = width;
-    this.height = height;
+    this.width        = width;
+    this.height       = height;
     this.leftWidth    = Math.max(width * 0.2, 200);
     this.boardWidth   = width - this.leftWidth;
     this.boardHeight  = height;
+    this.cellSize     = Math.min(this.boardWidth/15, this.boardHeight/15);
+
+    this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize-6)));
+
     this.refresh();
   }
 
