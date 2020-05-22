@@ -107,6 +107,12 @@ export class Board extends jst.Component {
       },
       subScript$c: {
         fontSize: "30%"
+      },
+      sideDistribution$c: { //adjust top margin?, size (relative)
+        
+      },
+      letterDistributionTable$c: { //relative size, center
+        
       }
     };
   }
@@ -128,6 +134,7 @@ export class Board extends jst.Component {
             letter => new Tile(letter, this.cellSize)
           )
         ),
+
         ["LETTER", "DISTRIBUTION"].map(
           l => jst.$div({cn: "-sideDistribution"}, l)
         ),
@@ -172,6 +179,4 @@ export class Board extends jst.Component {
 
     this.refresh();
   }
-
-  
 }
