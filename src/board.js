@@ -32,15 +32,15 @@ export class Board extends jst.Component {
     this.app          = app;
     this.tiles        = new Array(15).fill().map(col => new Array(15).fill());
 
-    this.tiles[5][5]  = new Tile("C", 10);
-    this.tiles[6][5]  = new Tile("H", 10);
-    this.tiles[7][5]  = new Tile("A", 10);
-    this.tiles[8][5]  = new Tile("R", 10);
-    this.tiles[9][5]  = new Tile("L", 10);
-    this.tiles[10][5] = new Tile("O", 10);
-    this.tiles[11][5] = new Tile("T", 10);
-    this.tiles[12][5] = new Tile("T", 10);
-    this.tiles[13][5] = new Tile("E", 10);
+    this.tiles[5][5]  = new Tile("C", 10, {jitter: true, shadow: true});
+    this.tiles[6][5]  = new Tile("H", 10, {jitter: true, shadow: true});
+    this.tiles[7][5]  = new Tile("A", 10, {jitter: true, shadow: true});
+    this.tiles[8][5]  = new Tile("R", 10, {jitter: true, shadow: true});
+    this.tiles[9][5]  = new Tile("L", 10, {jitter: true, shadow: true});
+    this.tiles[10][5] = new Tile("O", 10, {jitter: true, shadow: true});
+    this.tiles[11][5] = new Tile("T", 10, {jitter: true, shadow: true});
+    this.tiles[12][5] = new Tile("T", 10, {jitter: true, shadow: true});
+    this.tiles[13][5] = new Tile("E", 10, {jitter: true, shadow: true});
     this.resize(width, height);
   }
 
@@ -74,7 +74,7 @@ export class Board extends jst.Component {
         width$px:  this.cellSize,
         maxHeight$px: this.cellSize,
         minHeight$px: this.cellSize,
-        overflow:  "hidden",
+        //overflow:  "hidden",
         fontSize$px: this.cellSize*0.22,
         textAlign: "center",
         fontWeight: "bold"
@@ -125,7 +125,7 @@ export class Board extends jst.Component {
         jst.$div(
           {cn: "-teable"},
           ["T", "E", "A", "B", "L", "E"].map(
-            letter => new Tile(letter, this.leftWidth/7)
+            letter => new Tile(letter, this.cellSize)
           )
         ),
         ["LETTER", "DISTRIBUTION"].map(
@@ -163,12 +163,12 @@ export class Board extends jst.Component {
   resize(width, height) {
     this.width        = width;
     this.height       = height;
-    this.leftWidth    = Math.max(width * 0.2, 200);
-    this.boardWidth   = width - this.leftWidth;
     this.boardHeight  = height;
-    this.cellSize     = Math.min(this.boardWidth/15, this.boardHeight/15);
+    this.cellSize     = Math.min(width/15*0.7, height/15);
+    this.leftWidth    = this.cellSize * 5;
+    this.boardWidth   = width - this.leftWidth;
 
-    this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize-6)));
+    this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize)));
 
     this.refresh();
   }

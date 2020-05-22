@@ -8,10 +8,12 @@ import rules     from "./rules";
 // Tile
 //
 export class Tile extends jst.Component {
-  constructor(letter, size) {
+  constructor(letter, size, opts = {}) {
     super();
     this.letter         = letter;
-    this.size           = size;
+    this.shadow         = opts.shadow || false;
+    this.jitter         = opts.jitter || false;
+    this.resize(size);
   }
 
   cssLocal() {
@@ -19,9 +21,10 @@ export class Tile extends jst.Component {
         tile$c: {
           position: "relative",
           textAlign: "left",
-          borderColor: "black",
+          borderColor: jst.rgba(0,0,0,0.6),
           borderStyle: "solid",
-          backgroundColor: "#fcfdd7"
+          backgroundColor: "#fcfdd7",
+          zIndex: 10
         },
         subScript$c: {
           position: "absolute",
@@ -34,20 +37,23 @@ export class Tile extends jst.Component {
   cssInstance() {
     return {
       tile$c: {
-        borderWidth$px: 3,
+        borderWidth$px: this.borderSize,
         borderRadius$px: this.size/20,
-        height$px: this.size,
-        width$px: this.size
+        height$px: this.edgeSize,
+        width$px: this.edgeSize,
+        margin$px: [this.jitter ? this.rand(this.edgeSize/20):0, 0, 0, this.jitter ? this.rand(this.edgeSize/20):0],
+        transform: `rotate(${this.jitter ? this.rand(3):0}deg)`,
+        boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0
       },
       subScript$c: {
-        right$px: this.size*0.05,
-        bottom$px: this.size*0.05,
-        fontSize$px: this.size*0.3,
-        marginRight$px: this.size/6
+        right$px: this.edgeSize*0.05,
+        bottom$px: this.edgeSize*0.05,
+        fontSize$px: this.edgeSize*0.3,
+        marginRight$px: this.edgeSize/7
       },
       letter$c: {
-        marginLeft$px: this.size/6,
-        fontSize$px: this.size*0.7
+        marginLeft$px: this.edgeSize/6,
+        fontSize$px: this.edgeSize*0.7
       }
   };
 }
@@ -73,8 +79,19 @@ export class Tile extends jst.Component {
   }
 
   resize(size) {
-    this.size = size;
+    this.size       = size;
+    this.borderSize = size/14;
+    this.edgeSize   = size - this.borderSize*2;
     this.refresh();
+  }
+
+  rand(amount, onlyPos) {
+    if (!onlyPos) {
+      return Math.random() * amount * 2 - amount;
+    }
+    else {
+      return Math.random() * amount;
+    }
   }
   
 }
