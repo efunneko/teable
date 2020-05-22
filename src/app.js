@@ -23,6 +23,9 @@ export class App extends jst.Component {
 
     this.currDialog   = undefined;
 
+    // Listen for window resize events
+    window.onresize = e => this.resize();
+
   }
 
   render() {
@@ -36,6 +39,16 @@ export class App extends jst.Component {
       ] ||
         this.splash
     );
+  }
+
+  resize() {
+    console.log("Resizing");
+    this.width        = window.innerWidth;
+    this.height       = window.innerHeight;
+    console.log(this.width, this.height);
+    this.header.resize(this.width, 150);
+    this.body.resize(this.width, this.height - 150);
+    this.refresh();
   }
 
   subscribe(topic) {

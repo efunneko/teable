@@ -66,6 +66,13 @@ export class Body extends jst.Component {
     );
   }
 
+  resize(width, height) {
+    this.width = width;
+    this.height = height;
+    this.board.resize(width, height);
+    this.refresh();
+  }
+
   onServerMessage(topic, msg) {
     let match = topic.match(/server\/([^\/]+)\/pkt/);
   }

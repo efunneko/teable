@@ -18,6 +18,7 @@ export class Tile extends jst.Component {
     return {
         tile$c: {
           position: "relative",
+          textAlign: "left",
           borderWidth$px: 3,
           borderRadius$px: this.size/40,
           borderColor: "black",

@@ -30,11 +30,7 @@ export class Board extends jst.Component {
   constructor(app, width, height) {
     super();
     this.app          = app;
-    this.height       = height;
-    this.width        = width;
-    this.leftWidth    = Math.max(width * 0.2, 200);
-    this.boardWidth   = width - this.leftWidth;
-    this.boardHeight  = height;
+    this.resize(width, height);
   }
 
   cssLocal() {
@@ -47,15 +43,11 @@ export class Board extends jst.Component {
         display: "grid",
         gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px`
       },
-      sideTitle$c: {
-        margin$px: 4,
-        fontSize$px: this.leftWidth/10,
-        borderWidth$px: 3,
-        borderColor: "black",
-        borderStyle: "solid",
-        width$px: this.leftWidth/10,
-        height$px: this.leftWidth/10,
-        padding$px: 10,
+      leftBar$c: {
+        textAlign: "center"
+      },
+      teable$c: {
+        display: "inline-block"
       },
       mainBoard$c: {
         display: "grid",
@@ -114,8 +106,11 @@ export class Board extends jst.Component {
       jst.$div(
         {cn: "-leftBar"},
 
-        ["T", "E", "A", "B", "L", "E"].map(
-          letter => new Tile(letter, this.leftWidth/7)
+        jst.$div(
+          {cn: "-teable"},
+          ["T", "E", "A", "B", "L", "E"].map(
+            letter => new Tile(letter, this.leftWidth/7)
+          )
         ),
         ["LETTER", "DISTRIBUTION"].map(
           l => jst.$div({cn: "-sideDistribution"}, l)
@@ -148,6 +143,15 @@ export class Board extends jst.Component {
         )
       )
     );
+  }
+
+  resize(width, height) {
+    this.width = width;
+    this.height = height;
+    this.leftWidth    = Math.max(width * 0.2, 200);
+    this.boardWidth   = width - this.leftWidth;
+    this.boardHeight  = height;
+    this.refresh();
   }
 
   

@@ -76,5 +76,9 @@ export class Header extends jst.Component {
     );
   }
 
-  
+  resize(width, height) {
+    this.width = width;
+    this.height = height;
+    this.refresh();
+  }
 }
