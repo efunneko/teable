@@ -2,7 +2,7 @@ import {jst}            from "jayesstee";
 import {Header}         from "./header";
 import {Body}           from "./body";
 import {Splash}         from "./splash";
-import {Communicator}   from "./communicator";
+import {Game}           from "./game";
 
 
 export class App extends jst.Component {
@@ -19,15 +19,7 @@ export class App extends jst.Component {
     this.header       = new Header(this, this.width, 150);
     this.body         = new Body(this, this.width, this.height - 150);
     this.splash       = new Splash(this);
-    this.communicator = new Communicator(this,
-                                         {callbacks:
-                                          {
-                                            onServerInfo: info => this.onServerInfo(info),
-                                            onServerMessage: (topic, msg) => this.onServerMessage(topic, msg),
-                                            onClientMessage: (topic, msg) => this.onClientMessage(topic, msg)
-                                          }
-                                         }
-                                        );
+    this.game         = new Game(this);
 
     this.currDialog   = undefined;
 
@@ -47,7 +39,7 @@ export class App extends jst.Component {
   }
 
   subscribe(topic) {
-    this.communicator.subscribe(topic);
+    this.game.communicator.subscribe(topic);
   }
 
   getTitle() {
@@ -83,7 +75,7 @@ export class App extends jst.Component {
     brokerInfo.username = "teable";
     brokerInfo.password = "funwithwill"; // TODO - temp, will be changed
     this.setBrokerInfo(brokerInfo);
-    this.communicator.connect(brokerInfo);
+    this.game.connect(brokerInfo);
   }
 
   alert(message) {
@@ -95,22 +87,6 @@ export class App extends jst.Component {
     this.refresh();
   }
 
-  onBrokerConnection() {
-    this.communicator.doServerRequest("info", 2000, 3, response => {
-    });
-  }
-
-  onServerInfo(info) {
-    this.body.setServerInfo(info);
-  }
-
-  onServerMessage(topic, msg) {
-    this.body.onServerMessage(topic, msg);
-  }
-  
-  onClientMessage(topic, msg) {
-    this.body.onClientMessage(topic, msg);
-  }
   
 }
 
