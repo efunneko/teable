@@ -13,6 +13,9 @@ export class Tile extends jst.Component {
     this.letter         = letter;
     this.shadow         = opts.shadow || false;
     this.jitter         = opts.jitter || false;
+    this.leftMargin     = opts.jitter ? this.rand(this.edgeSize/20) : 0;
+    this.topMargin      = opts.jitter ? this.rand(this.edgeSize/20) : 0;
+    this.rotation       = opts.jitter ? this.rand(3) : 0;
     this.resize(size);
   }
 
@@ -41,8 +44,8 @@ export class Tile extends jst.Component {
         borderRadius$px: this.size/20,
         height$px: this.edgeSize,
         width$px: this.edgeSize,
-        margin$px: [this.jitter ? this.rand(this.edgeSize/20):0, 0, 0, this.jitter ? this.rand(this.edgeSize/20):0],
-        transform: `rotate(${this.jitter ? this.rand(3):0}deg)`,
+        margin$px: [this.topMargin, 0, 0, this.leftMargin],
+        transform: `rotate(${this.rotation}deg)`,
         boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0
       },
       subScript$c: {

@@ -116,7 +116,7 @@ export class Board extends jst.Component {
         fontSize$px: this.cellSize/4
       },
       letterDistributionTable$c: {
-        height$px: this.cellSize*6.5
+        fontSize$px: this.cellSize*0.25
       }
     };
   }
