@@ -23,22 +23,7 @@ export class Body extends jst.Component {
         padding$px:      0,
         margin$px:       0
       },
-      table: {
-        padding$px: 5
-      },
-
-      th: {
-        padding$px: 5,
-        backgroundColor: cssCommon.darkPrimary,
-        color: cssCommon.textOnDark
-      },
-
-      td: {
-        padding$px: 5,
-        backgroundColor: cssCommon.veryLightPrimary,
-        color: cssCommon.textOnLight
-      },
-
+      
       body$i: {
         marginTop$px: 40,
         height:       'calc(100vh - 32pt - 28px)',

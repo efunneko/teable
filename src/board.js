@@ -50,7 +50,7 @@ export class Board extends jst.Component {
       board$c: {
         fontFamily: "'DM Mono', monospace",
         display: "grid",
-        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px`
+        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.playersWidth}px`
       },
       leftBar$c: {
         textAlign: "center"
@@ -113,7 +113,17 @@ export class Board extends jst.Component {
         fontSize$px: this.cellSize/4
       },
       letterDistributionTable$c: {
+        marginTop$px: 8,
+        display: "inline-block",
+        textAlign: "center",
+        fontSize$px: this.cellSize*0.25,
+        backgroundColor: "white"
+      },
+      letterDistributionBlanks$c: {
         fontSize$px: this.cellSize*0.25
+      },
+      '.letterDistributionTable td': {
+        padding$px: [0, 5]
       }
     };
   }
@@ -154,7 +164,7 @@ export class Board extends jst.Component {
             ))
         )),
         jst.$div(
-          {id: "-letterDistributionBlanks"},
+          {cn: "-letterDistributionBlanks"},
           "Blanks - 2"
         )
       ),
@@ -177,9 +187,10 @@ export class Board extends jst.Component {
     this.width        = width;
     this.height       = height;
     this.boardHeight  = height;
-    this.cellSize     = Math.min(width/15*0.7, height/15);
-    this.leftWidth    = this.cellSize * 5;
-    this.boardWidth   = width - this.leftWidth;
+    this.cellSize     = Math.min(width/15*0.55, height/15);
+    this.leftWidth    = this.cellSize * 4;
+    this.playersWidth = this.cellSize * 5;
+    this.boardWidth   = width - this.leftWidth - this.playersWidth;
 
     this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize)));
 
