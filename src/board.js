@@ -50,9 +50,12 @@ export class Board extends jst.Component {
       board$c: {
         fontFamily: "'DM Mono', monospace",
         display: "grid",
-        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.playersWidth}px`
+        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.rightWidth}px`
       },
       leftBar$c: {
+        textAlign: "center"
+      },
+      rightBar$c: {
         textAlign: "center"
       },
       teable$c: {
@@ -179,7 +182,11 @@ export class Board extends jst.Component {
             )
           )
         )
-      )
+      ),
+      jst.$div(
+        {cn: "-rightBar"},
+        "Hi"
+      ),
     );
   }
 
@@ -189,8 +196,8 @@ export class Board extends jst.Component {
     this.boardHeight  = height;
     this.cellSize     = Math.min(width/15*0.55, height/15);
     this.leftWidth    = this.cellSize * 4;
-    this.playersWidth = this.cellSize * 5;
-    this.boardWidth   = width - this.leftWidth - this.playersWidth;
+    this.rightWidth   = this.cellSize * 4;
+    this.boardWidth   = this.cellSize * 15;
 
     this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize)));
 
