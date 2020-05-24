@@ -2,6 +2,7 @@ import {jst}     from "jayesstee";
 import css       from "./cssCommon";
 import rules     from "./rules";
 import {Tile}    from "./tile";
+import {Player}  from "./player";
 
 
 
@@ -41,7 +42,13 @@ export class Board extends jst.Component {
     this.tiles[11][5] = new Tile("T", 10, {jitter: true, shadow: true});
     this.tiles[12][5] = new Tile("T", 10, {jitter: true, shadow: true});
     this.tiles[13][5] = new Tile("E", 10, {jitter: true, shadow: true});
+    this.tiles[13][1] = new Tile("W", 10, {jitter: true, shadow: true});
+    this.tiles[13][2] = new Tile("I", 10, {jitter: true, shadow: true});
+    this.tiles[13][3] = new Tile("N", 10, {jitter: true, shadow: true});
+    this.tiles[13][4] = new Tile("N", 10, {jitter: true, shadow: true});
+    this.tiles[13][6] = new Tile("R", 10, {jitter: true, shadow: true});
     this.resize(width, height);
+    this.players = [new Player(this.app, this.rightWidth, this.height, "Charlotte", 1000, 7)];
   }
 
   cssLocal() {
@@ -50,16 +57,25 @@ export class Board extends jst.Component {
       board$c: {
         fontFamily: "'DM Mono', monospace",
         display: "grid",
-        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.rightWidth}px`
+        gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.rightWidth}px`,
+        textAlign: "center"
       },
       leftBar$c: {
         textAlign: "center"
       },
       rightBar$c: {
-        textAlign: "center"
+        textAlign: "center",
+        fontSize$px: this.cellSize / 3,
+        marginLeft$px: this.cellSize / 2,
+        borderStyle: "solid",
+        borderColor: "grey",
+        borderWidth$px: this.cellSize / 10,
+        borderRadius$px: this.cellSize / 10,
+        backgroundColor: "#fcfdd7"
       },
       teable$c: {
-        display: "inline-block"
+        display: "inline-block",
+        fontWeight: "bold"
       },
       mainBoard$c: {
         display: "grid",
@@ -185,7 +201,8 @@ export class Board extends jst.Component {
       ),
       jst.$div(
         {cn: "-rightBar"},
-        "Hi"
+        this.players,
+        player => new Player(this.app, this.rightWidth, this.height, "Eduard", 2, 7)
       ),
     );
   }
@@ -197,7 +214,7 @@ export class Board extends jst.Component {
     this.cellSize     = Math.min(width/15*0.55, height/15);
     this.leftWidth    = this.cellSize * 4;
     this.rightWidth   = this.cellSize * 4;
-    this.boardWidth   = this.cellSize * 15;
+    this.boardWidth   = this.cellSize * 16;
 
     this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize)));
 
