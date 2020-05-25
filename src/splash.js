@@ -137,6 +137,7 @@ export class Splash extends jst.Object {
   }
 
   connect(e) {
+    console.log("Called splash.connect")
     e.preventDefault();
     let vals = this.getFormValues("dialog");
     if (vals && vals.password) {

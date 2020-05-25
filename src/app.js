@@ -2,7 +2,8 @@ import {jst}            from "jayesstee";
 import {Header}         from "./header";
 import {Body}           from "./body";
 import {Splash}         from "./splash";
-import {Game}           from "./game";
+import {ChooseGame}     from "./chooseGame";
+import {GameManager}    from "./gameManager";
 
 
 export class App extends jst.Component {
@@ -12,6 +13,7 @@ export class App extends jst.Component {
     this.title        = "Teable";
     this.alerts       = [];
     this.brokerInfo   = undefined;
+    this.gameSelected = false;
     
     this.width        = window.innerWidth;
     this.height       = window.innerHeight;
@@ -19,7 +21,8 @@ export class App extends jst.Component {
     this.header       = new Header(this, this.width, 150);
     this.body         = new Body(this, this.width, this.height - 150);
     this.splash       = new Splash(this);
-    this.game         = new Game(this);
+    this.chooseGame   = new ChooseGame(this);
+    this.gameManager  = new GameManager(this);
 
     this.currDialog   = undefined;
 
@@ -31,12 +34,15 @@ export class App extends jst.Component {
   render() {
     return jst.$div(
       {id: "app"},
-      jst.if(this.brokerInfo) && [
-        this.header,
-        this.body,
-        this.currDialog,
-        this.alerts
-      ] ||
+      jst.if(this.brokerInfo) && (
+        this.chooseGame ||
+        [
+          this.header,
+          this.body,
+          this.currDialog,
+          this.alerts
+        ]
+      ) ||
         this.splash
     );
   }
@@ -88,7 +94,7 @@ export class App extends jst.Component {
     brokerInfo.username = "teable";
     brokerInfo.password = "funwithwill"; // TODO - temp, will be changed
     this.setBrokerInfo(brokerInfo);
-    this.game.connect(brokerInfo);
+    this.gameManager.connect(brokerInfo);
   }
 
   alert(message) {
