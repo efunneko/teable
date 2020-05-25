@@ -23,7 +23,8 @@ export class Splash extends jst.Object {
         backgroundColor: css.darkPrimary,
         fontWeight: "bold",
         color: css.textOnDark,
-        padding$px: 5
+        padding$px: 5,
+        textAlign: "center"
       },
       splashInner$c: {
         paddingTop$vh: 25,
@@ -62,8 +63,7 @@ export class Splash extends jst.Object {
         fontSize$px: 17,
         margin$px: [30, 0],
         padding$px: 0,
-        width$px: 600,
-        
+        width$px: 600
       },
       fieldset$c: {
         border: "none",
@@ -87,7 +87,8 @@ export class Splash extends jst.Object {
         textAlign: "center",
         fontSize$px: 22,
         borderRadius$px: 20,
-        margin$px: [30, 0, 0, 80],
+        margin$px: "auto",
+        marginTop$px: 30,
         cursor: "pointer"
       },
       connectButton$c$hover: {
@@ -117,14 +118,23 @@ export class Splash extends jst.Object {
               {cn: "-fieldset"},
               jst.$div(
                 {cn: "-label"},
+                "Name"
+              ),
+              jst.$input({cn: "-input",
+                type: "username",
+                name: "username"
+              }),
+              jst.$div(
+                {cn: "-label"},
                 "Password"
               ),
               jst.$input({cn: "-input",
-                          type: "password",
-                          name: "password",
-                          events: {
-                            keydown: e => {if (e.keyCode == 13) e.preventDefault()}
-                          }})
+                type: "password",
+                name: "password",
+                events: {
+                  keydown: e => {if (e.keyCode == 13) e.preventDefault()}
+                }
+              })
             ),
             jst.$div(
               {cn: "-connectButton", events: {click: e => this.connect(e)}},
