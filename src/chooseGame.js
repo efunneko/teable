@@ -2,7 +2,6 @@ import { jst } from "jayesstee";
 import css from "./cssCommon";
 
 
-
 //
 // ChooseGame - second screen after connecting to choose game to join
 //
@@ -10,6 +9,7 @@ export class ChooseGame extends jst.Object {
   constructor(app) {
     super();
     this.app = app;
+    window.choose = this;
   }
 
   cssLocal() {
@@ -163,14 +163,27 @@ export class ChooseGame extends jst.Object {
                   keydown: e => { if (e.keyCode == 13) e.preventDefault() }
                 }
               }),
+            ),
+            jst.$fieldset(
+              { cn: "-fieldset" },
               jst.$div(
-                { cn: `-smallButton`, events: { click: e => this.createGame(e) } },
-                "Create"
+                { cn: "-label" },
+                "Use Vowel Bag"
               ),
-              jst.$div(
-                { cn: `-smallButton`, events: { click: e => this.cancelCreate(e) } },
-                "Cancel"
-              )
+              jst.$input({
+                cn: "-checkbox",
+                type: "checkbox",
+                value: "useVowels",
+                name: "vowelBag"
+              })
+            ),
+            jst.$div(
+              { cn: `-smallButton`, events: { click: e => this.createGame(e) } },
+              "Create"
+            ),
+            jst.$div(
+              { cn: `-smallButton`, events: { click: e => this.cancelCreate(e) } },
+              "Cancel"
             )
           )
         )
@@ -194,7 +207,7 @@ export class ChooseGame extends jst.Object {
   createGame() {
     let vals = this.getFormValues("gameOptions");
     if (vals && vals.gameName) {
-      console.log("Game name:", vals.gameName);
+      console.log("Game name:", vals);
     }
 
 
