@@ -27,7 +27,13 @@ export class Body extends jst.Component {
       body$i: {
         marginTop$px: 40,
         height:       'calc(100vh - 32pt - 28px)',
-        overflowY:    'scroll'
+        overflowY:    'scroll',
+        textAlign: "center"
+      },
+
+      boardDiv$c: {
+        display: "inline-block",
+        margin: "auto"
       },
 
       '#body th': {
@@ -45,7 +51,7 @@ export class Body extends jst.Component {
         },
       },
       jst.$div(
-        {cn: ""},
+        {cn: "boardDiv"},
         this.board
       )
     );
