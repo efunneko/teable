@@ -67,6 +67,7 @@ export class ChooseGame extends jst.Object {
       },
       input$c: {
         width$px: 300,
+        marginLeft$px: 3
       },
       button$c: {
         width$px: 300,

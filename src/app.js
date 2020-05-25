@@ -5,6 +5,11 @@ import {Splash}         from "./splash";
 import {ChooseGame}     from "./chooseGame";
 import {GameManager}    from "./gameManager";
 
+const appStates = {
+  BeforeConnect: 1,
+  ChooseGame:    2,
+  Playing:       3
+};
 
 export class App extends jst.Component {
   constructor(specs) {
@@ -35,7 +40,7 @@ export class App extends jst.Component {
     return jst.$div(
       {id: "app"},
       jst.if(this.brokerInfo) && (
-        this.chooseGame ||
+//        this.chooseGame ||
         [
           this.header,
           this.body,
