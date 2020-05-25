@@ -19,13 +19,13 @@ export class Body extends jst.Component {
       body: {
         fontFamily:      '"Helvetica Neue", Helvetica, Arial, sans-serif',
         color:           cssCommon.textOnLight,
-        backgroundColor: "white",
+        backgroundColor: "white", //dimgray
         padding$px:      0,
         margin$px:       0
       },
       
       body$i: {
-        marginTop$px: 40,
+        //marginTop$px: 40,
         height:       'calc(100vh - 32pt - 28px)',
         overflowY:    'scroll',
         textAlign: "center"
