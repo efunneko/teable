@@ -149,7 +149,8 @@ export class Board extends jst.Component {
         fontSize$px: this.cellSize*0.25
       },
       '.letterDistributionTable td': {
-        padding$px: [0, 5]
+        whiteSpace: "nowrap",
+        padding$px: [0, this.cellSize*0.1]
       },
       letterTray$c: {
         textAlign: "center",

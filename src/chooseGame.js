@@ -2,6 +2,11 @@ import { jst } from "jayesstee";
 import css from "./cssCommon";
 
 
+const states = {
+  CreateOrJoin: 1,
+  CreateGame: 2
+};
+
 //
 // ChooseGame - second screen after connecting to choose game to join
 //
@@ -9,6 +14,7 @@ export class ChooseGame extends jst.Object {
   constructor(app) {
     super();
     this.app = app;
+    this.state = states.CreateOrJoin;
     window.choose = this;
   }
 
@@ -108,15 +114,16 @@ export class ChooseGame extends jst.Object {
 
 
   render() {
-    if (this.createGame) {
-      return this.renderGameOptions();
+    if (this.state === states.CreateOrJoin) {
+      return this.renderStartOptions();
     }
     else {
-      return this.renderStartOptions();
+      return this.renderGameOptions();
     }
   }
 
   renderStartOptions() {
+    console.log("renderStartOptions");
     return jst.$div(
       { cn: "-splash" },
       jst.$div(
@@ -142,6 +149,7 @@ export class ChooseGame extends jst.Object {
   }
 
   renderGameOptions() {
+    console.log("renderGameOptions");
     return jst.$div(
       { cn: "-splash" },
       jst.$div(
@@ -196,12 +204,13 @@ export class ChooseGame extends jst.Object {
   }
 
   createSelected() {
-    this.createGame = true;
+    console.log("create");
+    this.state = states.CreateGame;
     this.refresh();
   }
 
   cancelCreate() {
-    this.createGame = false;
+    this.state = states.CreateOrJoin;
     this.refresh();
   }
 
