@@ -209,9 +209,8 @@ export class ChooseGame extends jst.Object {
     let vals = this.getFormValues("gameOptions");
     if (vals && vals.gameName) {
       console.log("Game name:", vals);
+      this.app.newGame(vals);
     }
-
-
   }
 
 }

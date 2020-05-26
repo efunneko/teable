@@ -1,5 +1,4 @@
 import {jst}            from "jayesstee";
-//import {Header}         from "./header";
 import {Body}           from "./body";
 import {Splash}         from "./splash";
 import {ChooseGame}     from "./chooseGame";
@@ -19,11 +18,11 @@ export class App extends jst.Component {
     this.alerts       = [];
     this.brokerInfo   = undefined;
     this.gameSelected = false;
+    this.state        = appStates.BeforeConnect;
     
     this.width        = window.innerWidth;
     this.height       = window.innerHeight;
 
-    //this.header       = new Header(this, this.width, 150);
     this.body         = new Body(this, this.width, this.height - 150);
     this.splash       = new Splash(this);
     this.chooseGame   = new ChooseGame(this);
@@ -39,25 +38,32 @@ export class App extends jst.Component {
   render() {
     return jst.$div(
       {id: "app"},
-      jst.if(this.brokerInfo) && (
-//        this.chooseGame ||
-        [
-          //this.header,
-          this.body,
-          this.currDialog,
-          this.alerts
-        ]
-      ) ||
-        this.splash
+      // Very poor-man's router - consider replaying with proper navigation
+      jst.if(this.state === appStates.BeforeConnect, () => this.renderBeforeConnect()),
+      jst.if(this.state === appStates.ChooseGame, () => this.renderChooseGame()),
+      jst.if(this.state === appStates.Playing, () => this.renderPlaying())
     );
   }
 
+  renderBeforeConnect() {
+    return this.splash;
+  }
+
+  renderChooseGame() {
+    return this.chooseGame;
+  }
+
+  renderPlaying() {
+    return [
+      this.body,
+      this.currDialog,
+      this.alerts
+    ];
+  }
+
   resize() {
-    console.log("Resizing");
     this.width        = window.innerWidth;
     this.height       = window.innerHeight;
-    console.log(this.width, this.height);
-    //this.header.resize(this.width, 150);
     this.body.resize(this.width, this.height - 150);
     this.refresh();
   }
@@ -111,6 +117,15 @@ export class App extends jst.Component {
     this.refresh();
   }
 
+  onBrokerConnection() {
+    this.state = appStates.ChooseGame;
+    this.refresh();
+  }
   
+  newGame() {
+    this.state = appStates.Playing;
+    this.refresh();
+  }
+
 }
 

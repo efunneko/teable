@@ -12,6 +12,7 @@ const States = {
 
 export class GameManager {
   constructor(app) {
+    this.app = app;
     this.communicator = new Communicator(this,
       {
         callbacks:
@@ -30,8 +31,9 @@ export class GameManager {
   }
 
   onBrokerConnection() {
-    this.communicator.doServerRequest("info", 2000, 3, response => {
-    });
+    this.app.onBrokerConnection();
+    //this.communicator.doServerRequest("info", 2000, 3, response => {
+    //});
   }
 
   onServerInfo(info) {
