@@ -7,6 +7,9 @@ import {Tile}    from "./tile";
 //
 // letter tray
 //
+
+let select = false;
+
 export class Tray extends jst.Component {
   constructor(app, board) {
     super();
@@ -20,6 +23,7 @@ export class Tray extends jst.Component {
     this.slots[4]     = new Tile("L", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
     this.slots[5]     = new Tile("L", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
     this.slots[6]     = new Tile("O", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.selectedTile = undefined;
   }
 
   cssLocal() {
@@ -41,7 +45,10 @@ export class Tray extends jst.Component {
       },
       slot$c: {
         borderStyle: "solid",
-        borderColor: "#8B4513 #D2B48C #D2B48C #8B4513"
+        borderColor: "#8B4513 #D2B48C #D2B48C #8B4513",
+      },
+      slot$c$hover: {
+        backgroundColor: select ? "brown" : ""
       },
       slotFilled$c: {
         borderStyle: "none"
@@ -50,18 +57,52 @@ export class Tray extends jst.Component {
   }
   
   
-  render() {
+  render(tile) {
     return jst.$div(
       {cn: "-tray"},
-      this.slots.map(slot => jst.$div({cn: `-slot ${slot ? "-slotFilled" : ""}`}, slot)),
+      this.slots.map((slot, index) => jst.$div(
+          {
+              cn: `-slot ${slot ? "-slotFilled" : ""}`,
+              events: {click: e => this.rePosition(index, this.selectedTile)}
+          },
+          slot
+       )),
     );
   }
 
   tileSelected(tile) {
     console.log(tile.letter);
-    this.slots.forEach(slot => slot ? slot.setSelected(false) : undefined)
-    tile.setSelected(true);
-    this.board.test(true);
+    if(tile.isSelected === true) {
+        tile.setSelected(false);
+        this.board.test(false);
+        select = false;
+        this.selectedTile = undefined;
+    }
+    else {
+        this.slots.forEach(slot => slot ? slot.setSelected(false) : undefined)
+        tile.setSelected(true);
+        this.board.test(true);
+        select = true;
+        this.selectedTile = tile;
+        console.log("selected tile: ", this.selectedTile);
+    }
+    this.refresh();
+  }
+
+  rePosition(index, tile) {
+    console.log(index);
+    console.log(tile);
+    console.log(this.slots);
+
+    for(let i=0; i<9; i++) {
+        if(this.slots[i] == tile) {
+            this.slots[i] = undefined;
+            console.log("it's me! -", tile);
+        }
+    }
+    this.slots[index] = tile;
+
+    this.refresh();
   }
 
   resize(width, height, cellSize) {
