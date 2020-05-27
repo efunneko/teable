@@ -19,7 +19,7 @@ export class Body extends jst.Component {
       body: {
         fontFamily:      '"Helvetica Neue", Helvetica, Arial, sans-serif',
         color:           cssCommon.textOnLight,
-        backgroundColor: "white", //dimgray
+        backgroundColor: "white",
         padding$px:      0,
         margin$px:       0
       },

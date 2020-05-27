@@ -8,17 +8,18 @@ import {Tile}    from "./tile";
 // letter tray
 //
 export class Tray extends jst.Component {
-  constructor(app) {
+  constructor(app, board) {
     super();
     this.app          = app;
     this.width        = 10;
     this.height       = 10;
+    this.board        = board;
     this.slots        = new Array(9).fill();
-    this.slots[2]     = new Tile("H", 10, {jitter: false, shadow: true});
-    this.slots[3]     = new Tile("E", 10, {jitter: false, shadow: true});
-    this.slots[4]     = new Tile("L", 10, {jitter: false, shadow: true});
-    this.slots[5]     = new Tile("L", 10, {jitter: false, shadow: true});
-    this.slots[6]     = new Tile("O", 10, {jitter: false, shadow: true});
+    this.slots[2]     = new Tile("H", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[3]     = new Tile("E", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[4]     = new Tile("L", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[5]     = new Tile("L", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[6]     = new Tile("O", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
   }
 
   cssLocal() {
@@ -41,7 +42,9 @@ export class Tray extends jst.Component {
       slot$c: {
         borderStyle: "solid",
         borderColor: "#8B4513 #D2B48C #D2B48C #8B4513"
-        //boxShadow$px: [5, 5, 10]
+      },
+      slotFilled$c: {
+        borderStyle: "none"
       }
     };
   }
@@ -50,8 +53,15 @@ export class Tray extends jst.Component {
   render() {
     return jst.$div(
       {cn: "-tray"},
-      this.slots.map(slot => jst.$div({cn: "-slot"}, slot))
+      this.slots.map(slot => jst.$div({cn: `-slot ${slot ? "-slotFilled" : ""}`}, slot)),
     );
+  }
+
+  tileSelected(tile) {
+    console.log(tile.letter);
+    this.slots.forEach(slot => slot ? slot.setSelected(false) : undefined)
+    tile.setSelected(true);
+    this.board.test(true);
   }
 
   resize(width, height, cellSize) {
