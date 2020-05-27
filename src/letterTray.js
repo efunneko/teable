@@ -95,9 +95,8 @@ export class Tray extends jst.Component {
     console.log(this.slots);
 
     for(let i=0; i<9; i++) {
-        if(this.slots[i] == tile) {
+        if(this.slots[i] === tile) {
             this.slots[i] = undefined;
-            console.log("it's me! -", tile);
         }
     }
     this.slots[index] = tile;
