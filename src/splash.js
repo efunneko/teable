@@ -154,5 +154,4 @@ export class Splash extends jst.Object {
       this.app.connect(vals);
     }
   }
-  
 }

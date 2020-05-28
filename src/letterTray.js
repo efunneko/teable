@@ -7,18 +7,23 @@ import {Tile}    from "./tile";
 //
 // letter tray
 //
+
+let select = false;
+
 export class Tray extends jst.Component {
-  constructor(app) {
+  constructor(app, board) {
     super();
     this.app          = app;
     this.width        = 10;
     this.height       = 10;
+    this.board        = board;
     this.slots        = new Array(9).fill();
-    this.slots[2]     = new Tile("H", 10, {jitter: false, shadow: true});
-    this.slots[3]     = new Tile("E", 10, {jitter: false, shadow: true});
-    this.slots[4]     = new Tile("L", 10, {jitter: false, shadow: true});
-    this.slots[5]     = new Tile("L", 10, {jitter: false, shadow: true});
-    this.slots[6]     = new Tile("O", 10, {jitter: false, shadow: true});
+    this.slots[2]     = new Tile("H", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[3]     = new Tile("E", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[4]     = new Tile("L", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[5]     = new Tile("L", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.slots[6]     = new Tile("O", 10, {jitter: false, shadow: true, clickCallback: e => this.tileSelected(e)});
+    this.selectedTile = undefined;
   }
 
   cssLocal() {
@@ -40,18 +45,63 @@ export class Tray extends jst.Component {
       },
       slot$c: {
         borderStyle: "solid",
-        borderColor: "#8B4513 #D2B48C #D2B48C #8B4513"
-        //boxShadow$px: [5, 5, 10]
+        borderColor: "#8B4513 #D2B48C #D2B48C #8B4513",
+      },
+      slot$c$hover: {
+        backgroundColor: select ? "brown" : ""
+      },
+      slotFilled$c: {
+        borderStyle: "none"
       }
     };
   }
   
   
-  render() {
+  render(tile) {
     return jst.$div(
       {cn: "-tray"},
-      this.slots.map(slot => jst.$div({cn: "-slot"}, slot))
+      this.slots.map((slot, index) => jst.$div(
+          {
+              cn: `-slot ${slot ? "-slotFilled" : ""}`,
+              events: {click: e => this.rePosition(index, this.selectedTile)}
+          },
+          slot
+       )),
     );
+  }
+
+  tileSelected(tile) {
+    console.log(tile.letter);
+    if(tile.isSelected === true) {
+        tile.setSelected(false);
+        this.board.test(false);
+        select = false;
+        this.selectedTile = undefined;
+    }
+    else {
+        this.slots.forEach(slot => slot ? slot.setSelected(false) : undefined)
+        tile.setSelected(true);
+        this.board.test(true);
+        select = true;
+        this.selectedTile = tile;
+        console.log("selected tile: ", this.selectedTile);
+    }
+    this.refresh();
+  }
+
+  rePosition(index, tile) {
+    console.log(index);
+    console.log(tile);
+    console.log(this.slots);
+
+    for(let i=0; i<9; i++) {
+        if(this.slots[i] === tile) {
+            this.slots[i] = undefined;
+        }
+    }
+    this.slots[index] = tile;
+
+    this.refresh();
   }
 
   resize(width, height, cellSize) {

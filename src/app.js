@@ -70,8 +70,11 @@ export class App extends jst.Component {
   }
 
   resize() {
+    console.log("Resizing");
     this.width        = window.innerWidth;
     this.height       = window.innerHeight;
+    console.log(this.width, this.height);
+    //this.header.resize(this.width, 150);
     this.body.resize(this.width, this.height - 150);
     this.refresh();
   }
@@ -125,10 +128,6 @@ export class App extends jst.Component {
     this.refresh();
   }
 
-  onBrokerConnection() {
-    this.state = appStates.ChooseGame;
-    this.refresh();
-  }
   
   createNewGame(opts) {
     this.state = appStates.WaitingForPlayers;

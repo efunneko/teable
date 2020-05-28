@@ -25,6 +25,8 @@ const cellValToText = {
 
 const subScript = [1, 3];
 
+let select = false;
+
 //
 // Board - Renders and manages the playing surface
 //
@@ -48,9 +50,11 @@ export class Board extends jst.Component {
     this.tiles[13][3] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][4] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][6] = new Tile("R", 10, {jitter: true, shadow: true});
+    
     this.players = [new Player(this.app, this.rightWidth, this.height, {name: "Charlotte", score: 1000, numTiles: 7}),
                     new Player(this.app, this.rightWidth, this.height, {name: "Eduard", score: 2, numTiles: 7})];
     this.letterTray = new Tray(this.app);
+    this.select = select;
     this.resize(width, height);
   }
 
@@ -61,7 +65,6 @@ export class Board extends jst.Component {
         fontFamily: "'DM Mono', monospace",
         display: "grid",
         gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.rightWidth}px`,
-        gridTemplateRows: `repeat(3, ${this.boardHeight}px)`,
         textAlign: "center",
         marginTop$px: this.cellSize
       },
@@ -105,6 +108,10 @@ export class Board extends jst.Component {
         fontSize$px: this.cellSize*0.22,
         textAlign: "center",
         fontWeight: "bold"
+      },
+      boardCell$c$hover: {
+        backgroundColor: select ? "green" : "",
+        cursor: this.select ? "pointer" : ""
       },
       boardCellText$c: {
         verticalAlign: 'middle',
@@ -158,7 +165,7 @@ export class Board extends jst.Component {
         display: "inline-block",
         margin: "auto",
         marginTop$px: this.cellSize / 2
-      }
+      },
     };
   }
   
@@ -225,6 +232,12 @@ export class Board extends jst.Component {
         this.players
       )
     );
+  }
+
+  test(isSelect) {
+    select = isSelect;
+    console.log(select);
+    this.refresh();
   }
 
   resize(width, height) {

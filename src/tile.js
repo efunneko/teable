@@ -1,6 +1,7 @@
 import {jst}     from "jayesstee";
 import css       from "./cssCommon";
 import rules     from "./rules";
+import {Board}   from "./board";
 
 
 
@@ -13,9 +14,11 @@ export class Tile extends jst.Component {
     this.letter         = letter;
     this.shadow         = opts.shadow || false;
     this.jitter         = opts.jitter || false;
+    this.clickCallback  = opts.clickCallback;
     this.leftMargin     = opts.jitter ? this.rand(this.edgeSize/20) : 0;
     this.topMargin      = opts.jitter ? this.rand(this.edgeSize/20) : 0;
     this.rotation       = opts.jitter ? this.rand(3) : 0;
+    this.isSelected     = false;
     this.resize(size);
   }
 
@@ -33,6 +36,9 @@ export class Tile extends jst.Component {
           position: "absolute",
         },
         letter$c: {
+        },
+        selected$c: {
+          borderColor: "blue"
         }
     };
   }
@@ -46,7 +52,9 @@ export class Tile extends jst.Component {
         width$px: this.edgeSize,
         margin$px: [this.topMargin, 0, 0, this.leftMargin],
         transform: `rotate(${this.rotation}deg)`,
-        boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0
+        boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0,
+        cursor: "pointer",
+        borderColor: this.selected ? "blue" : ""
       },
       subScript$c: {
         right$px: this.edgeSize*0.05,
@@ -64,7 +72,8 @@ export class Tile extends jst.Component {
   render() {
     return jst.$div(
       {
-        cn: "-tile --tile"
+        cn: `-tile --tile ${this.isSelected ? "-selected" : ""}`,
+        events: {click: e => this.clicked(e)}
       },
       jst.$div(
         {
@@ -79,6 +88,17 @@ export class Tile extends jst.Component {
           rules.points[this.letter]
       )
     );
+  }
+
+  clicked(e) {
+    if(this.clickCallback) {
+      this.clickCallback(this);
+    }
+  }
+
+  setSelected(isSelected) {
+    this.isSelected = isSelected;
+    this.refresh();
   }
 
   resize(size) {
@@ -96,5 +116,4 @@ export class Tile extends jst.Component {
       return Math.random() * amount;
     }
   }
-  
 }
