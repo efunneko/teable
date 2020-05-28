@@ -130,7 +130,7 @@ export class ChooseGame extends jst.Object {
         { cn: "-splashInner" },
         jst.$div(
           { cn: "-title" },
-          "Do you want to:"
+          ""
         ),
         jst.$div(
           { cn: "-dialog" },
@@ -182,8 +182,8 @@ export class ChooseGame extends jst.Object {
               jst.$input({
                 cn: "-checkbox",
                 type: "checkbox",
-                value: "useVowels",
-                name: "vowelBag"
+                value: "yes",
+                name: "useVowelBag"
               })
             ),
             jst.$div(
@@ -218,7 +218,7 @@ export class ChooseGame extends jst.Object {
     let vals = this.getFormValues("gameOptions");
     if (vals && vals.gameName) {
       console.log("Game name:", vals);
-      this.app.newGame(vals);
+      this.app.createNewGame(vals);
     }
   }
 

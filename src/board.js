@@ -48,7 +48,8 @@ export class Board extends jst.Component {
     this.tiles[13][3] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][4] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][6] = new Tile("R", 10, {jitter: true, shadow: true});
-    this.players = [new Player(this.app, this.rightWidth, this.height, "Charlotte", 1000, 7)];
+    this.players = [new Player(this.app, this.rightWidth, this.height, {name: "Charlotte", score: 1000, numTiles: 7}),
+                    new Player(this.app, this.rightWidth, this.height, {name: "Eduard", score: 2, numTiles: 7})];
     this.letterTray = new Tray(this.app);
     this.resize(width, height);
   }
@@ -221,9 +222,8 @@ export class Board extends jst.Component {
       ),
       jst.$div(
         {cn: "-rightBar"},
-        this.players,
-        player => new Player(this.app, this.rightWidth, this.height, "Eduard", 2, 7)
-      ),
+        this.players
+      )
     );
   }
 

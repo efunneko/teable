@@ -48,5 +48,25 @@ export class GameManager {
     this.body.onClientMessage(topic, msg);
   }
 
+  createNewGame(opts) {
+    let gameName    = opts.name;
+    let useVowelBag = opts.useVowelBag;
+
+    this.gameState  = new GameState(gameName, useVowelBag, this.app.playerMe);    
+
+  }
+
+}
+
+
+// This will hold all the information about the game - it will be sent over the network to other
+// players and saved in localstorage
+class GameState {
+  constructor(name, useVowelBag, playerMe) {
+    this.name        = name;
+    this.useVowelBag = useVowelBag;
+    this.players     = [playerMe];
+
+  }
 
 }
