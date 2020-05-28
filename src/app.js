@@ -20,7 +20,8 @@ export class App extends jst.Component {
     this.alerts             = [];
     this.brokerInfo         = undefined;
     this.gameSelected       = false;
-    this.state              = appStates.BeforeConnect;
+    //this.state              = appStates.BeforeConnect;
+    this.state              = appStates.Playing;
           
     this.width              = window.innerWidth;
     this.height             = window.innerHeight;
@@ -137,10 +138,15 @@ export class App extends jst.Component {
 
   startGame(opts) {
     this.state = appStates.Playing;
-    this.refesh();
+    this.refresh();
   }
 
   cancelStart(opts) {
+    this.state = appStates.ChooseGame;
+    this.refresh();
+  }
+
+  onBrokerConnection() {
     this.state = appStates.ChooseGame;
     this.refresh();
   }

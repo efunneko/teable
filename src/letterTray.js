@@ -74,14 +74,14 @@ export class Tray extends jst.Component {
     console.log(tile.letter);
     if(tile.isSelected === true) {
         tile.setSelected(false);
-        this.board.test(false);
+        this.board.setTilePlacementActive(false);
         select = false;
         this.selectedTile = undefined;
     }
     else {
         this.slots.forEach(slot => slot ? slot.setSelected(false) : undefined)
         tile.setSelected(true);
-        this.board.test(true);
+        this.board.setTilePlacementActive(true);
         select = true;
         this.selectedTile = tile;
         console.log("selected tile: ", this.selectedTile);
@@ -94,8 +94,12 @@ export class Tray extends jst.Component {
     console.log(tile);
     console.log(this.slots);
 
+    if (!tile) {
+      return;
+    }
+
     for(let i=0; i<9; i++) {
-        if(this.slots[i] === tile) {
+        if(i != index && this.slots[i] === tile) {
             this.slots[i] = undefined;
         }
     }
