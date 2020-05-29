@@ -18,6 +18,7 @@ export class Tile extends jst.Component {
     this.leftMargin     = opts.jitter ? this.rand(this.edgeSize/20) : 0;
     this.topMargin      = opts.jitter ? this.rand(this.edgeSize/20) : 0;
     this.rotation       = opts.jitter ? this.rand(3) : 0;
+    this.disabled        = false;
     this.isSelected     = false;
     this.resize(size);
   }
@@ -29,7 +30,7 @@ export class Tile extends jst.Component {
           textAlign: "left",
           borderColor: jst.rgba(0,0,0,0.6),
           borderStyle: "solid",
-          backgroundColor: "#fcfdd7",
+          //backgroundColor: this.disabled ? "grey" : "#fcfdd7",
           zIndex: 10
         },
         subScript$c: {
@@ -54,17 +55,20 @@ export class Tile extends jst.Component {
         transform: `rotate(${this.rotation}deg)`,
         boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0,
         cursor: "pointer",
-        borderColor: this.selected ? "blue" : ""
+        backgroundColor: this.disabled ? "gainsboro" : "#fcfdd7",
+        borderColor: this.disabled ? "grey" : ""
       },
       subScript$c: {
         right$px: this.edgeSize*0.05,
         bottom$px: this.edgeSize*0.05,
         fontSize$px: this.edgeSize*0.3,
-        marginRight$px: this.edgeSize/7
+        marginRight$px: this.edgeSize/7,
+        color: this.disabled ? "grey" : ""
       },
       letter$c: {
         marginLeft$px: this.edgeSize/6,
-        fontSize$px: this.edgeSize*0.7
+        fontSize$px: this.edgeSize*0.7,
+        color: this.disabled ? "grey" : ""
       }
   };
 }
@@ -91,13 +95,18 @@ export class Tile extends jst.Component {
   }
 
   clicked(e) {
-    if(this.clickCallback) {
+    if(this.clickCallback && !this.disabled) {
       this.clickCallback(this);
     }
   }
 
   setSelected(isSelected) {
     this.isSelected = isSelected;
+    this.refresh();
+  }
+
+  setDisabled(disabled) {
+    this.disabled = disabled;
     this.refresh();
   }
 

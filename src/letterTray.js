@@ -8,8 +8,6 @@ import {Tile}    from "./tile";
 // letter tray
 //
 
-let select = false;
-
 export class Tray extends jst.Component {
   constructor(app, board) {
     super();
@@ -48,7 +46,7 @@ export class Tray extends jst.Component {
         borderColor: "#8B4513 #D2B48C #D2B48C #8B4513",
       },
       slot$c$hover: {
-        backgroundColor: select ? "brown" : ""
+        backgroundColor: this.selectedTile ? "brown" : ""
       },
       slotFilled$c: {
         borderStyle: "none"
@@ -75,18 +73,20 @@ export class Tray extends jst.Component {
     if(tile.isSelected === true) {
         tile.setSelected(false);
         this.board.setTilePlacementActive(false);
-        select = false;
         this.selectedTile = undefined;
     }
     else {
         this.slots.forEach(slot => slot ? slot.setSelected(false) : undefined)
         tile.setSelected(true);
         this.board.setTilePlacementActive(true);
-        select = true;
         this.selectedTile = tile;
         console.log("selected tile: ", this.selectedTile);
     }
     this.refresh();
+  }
+
+  unSelectTile() {
+      this.selectedTile = undefined;
   }
 
   rePosition(index, tile) {
@@ -94,7 +94,7 @@ export class Tray extends jst.Component {
     console.log(tile);
     console.log(this.slots);
 
-    if (!tile) {
+    if (!tile || this.slots[index]) {
       return;
     }
 
