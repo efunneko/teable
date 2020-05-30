@@ -183,8 +183,27 @@ export class ChooseGame extends jst.Object {
                 cn: "-checkbox",
                 type: "checkbox",
                 value: "yes",
-                name: "useVowelBag"
+                name: "useVowelBag",
+                events: {
+                  change: e => this.setUseVowelBag()
+                }
               })
+            ),
+            jst.$fieldset(
+              { cn: "-fieldset" },
+              jst.$div(
+                { cn: "-label" },
+                "Starting number of vowels"
+              ),
+              jst.$input({
+                cn: "-input",
+                type: "text",
+                name: "numVowels",
+                properties: this.useVowelBag ? [] : ["disabled"],
+                events: {
+                  keydown: e => { if (e.keyCode == 13) e.preventDefault() }
+                }
+              }),
             ),
             jst.$div(
               { cn: `-smallButton`, events: { click: e => this.createGame(e) } },
@@ -220,6 +239,12 @@ export class ChooseGame extends jst.Object {
       console.log("Game name:", vals);
       this.app.createNewGame(vals);
     }
+  }
+
+  setUseVowelBag() {
+    let vals = this.getFormValues("gameOptions");
+    this.useVowelBag = vals.useVowelBag;
+    this.refresh();
   }
 
 }
