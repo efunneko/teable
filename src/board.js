@@ -49,9 +49,10 @@ export class Board extends jst.Component {
     this.tiles[13][4] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][6] = new Tile("R", 10, {jitter: true, shadow: true});
 
-    this.players = [new Player(this.app, this.rightWidth, this.height, {name: "Charlotte", score: 1000, numTiles: 7}),
-                    new Player(this.app, this.rightWidth, this.height, {name: "Eduard", score: 2, numTiles: 7})];
+    this.players = [new Player(this.app, this.rightWidth, height, {name: "Charlotte", score: 1000, numTiles: 7}),
+                    new Player(this.app, this.rightWidth, height, {name: "Eduard", score: 2, numTiles: 7})];
     this.letterTray = new Tray(this.app, this);
+    this.tile = new Tile(this.letter, this.size, {jitter: true, shadow: true})
     this.tilePlacementActive = false;
     this.resize(width, height);
   }
@@ -213,7 +214,10 @@ export class Board extends jst.Component {
           rules.board.map(
             (row, rowIndex) => row.map(
               (cell, colIndex) => jst.$div(
-                {cn: cellValToClass[cell] + " -boardCell"},
+                {
+                  cn: cellValToClass[cell] + " -boardCell",
+                  events: {click: e => this.tileToBoard(this.letterTray.selectedTile, colIndex, rowIndex, this.letterTray.index)}
+                },
                 cellValToText[cell],
                 jst.$div({cn: "-boardTile"}, this.tiles[colIndex][rowIndex])
               )
@@ -234,7 +238,17 @@ export class Board extends jst.Component {
 
   setTilePlacementActive(isActive) {
     this.tilePlacementActive = isActive;
-    console.log(this.tilePlacementActive);
+    this.refresh();
+  }
+
+  tileToBoard(tile, column, row) {
+    if(this.tilePlacementActive) {
+      this.tiles[column][row] = new Tile(tile.letter, tile.size, {jitter: true, shadow: true});
+      //tile.setSelected(true);
+      tile.setDisabled(true);
+      //this.tilePlacementActive = false;
+      this.letterTray.unSelectTile();
+    }
     this.refresh();
   }
 
