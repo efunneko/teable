@@ -2,6 +2,11 @@ import { jst } from "jayesstee";
 import css from "./cssCommon";
 
 
+const states = {
+  CreateOrJoin: 1,
+  CreateGame: 2
+};
+
 //
 // ChooseGame - second screen after connecting to choose game to join
 //
@@ -9,6 +14,7 @@ export class ChooseGame extends jst.Object {
   constructor(app) {
     super();
     this.app = app;
+    this.state = states.CreateOrJoin;
     window.choose = this;
   }
 
@@ -67,6 +73,7 @@ export class ChooseGame extends jst.Object {
       },
       input$c: {
         width$px: 300,
+        marginLeft$px: 3
       },
       button$c: {
         width$px: 300,
@@ -107,22 +114,23 @@ export class ChooseGame extends jst.Object {
 
 
   render() {
-    if (this.createGame) {
-      return this.renderGameOptions();
+    if (this.state === states.CreateOrJoin) {
+      return this.renderStartOptions();
     }
     else {
-      return this.renderStartOptions();
+      return this.renderGameOptions();
     }
   }
 
   renderStartOptions() {
+    console.log("renderStartOptions");
     return jst.$div(
       { cn: "-splash" },
       jst.$div(
         { cn: "-splashInner" },
         jst.$div(
           { cn: "-title" },
-          "Do you want to:"
+          ""
         ),
         jst.$div(
           { cn: "-dialog" },
@@ -141,6 +149,7 @@ export class ChooseGame extends jst.Object {
   }
 
   renderGameOptions() {
+    console.log("renderGameOptions");
     return jst.$div(
       { cn: "-splash" },
       jst.$div(
@@ -173,9 +182,28 @@ export class ChooseGame extends jst.Object {
               jst.$input({
                 cn: "-checkbox",
                 type: "checkbox",
-                value: "useVowels",
-                name: "vowelBag"
+                value: "yes",
+                name: "useVowelBag",
+                events: {
+                  change: e => this.setUseVowelBag()
+                }
               })
+            ),
+            jst.$fieldset(
+              { cn: "-fieldset" },
+              jst.$div(
+                { cn: "-label" },
+                "Starting number of vowels"
+              ),
+              jst.$input({
+                cn: "-input",
+                type: "text",
+                name: "numVowels",
+                properties: this.useVowelBag ? [] : ["disabled"],
+                events: {
+                  keydown: e => { if (e.keyCode == 13) e.preventDefault() }
+                }
+              }),
             ),
             jst.$div(
               { cn: `-smallButton`, events: { click: e => this.createGame(e) } },
@@ -195,12 +223,13 @@ export class ChooseGame extends jst.Object {
   }
 
   createSelected() {
-    this.createGame = true;
+    console.log("create");
+    this.state = states.CreateGame;
     this.refresh();
   }
 
   cancelCreate() {
-    this.createGame = false;
+    this.state = states.CreateOrJoin;
     this.refresh();
   }
 
@@ -208,9 +237,14 @@ export class ChooseGame extends jst.Object {
     let vals = this.getFormValues("gameOptions");
     if (vals && vals.gameName) {
       console.log("Game name:", vals);
+      this.app.createNewGame(vals);
     }
+  }
 
-
+  setUseVowelBag() {
+    let vals = this.getFormValues("gameOptions");
+    this.useVowelBag = vals.useVowelBag;
+    this.refresh();
   }
 
 }

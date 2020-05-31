@@ -3,6 +3,7 @@ import css       from "./cssCommon";
 import rules     from "./rules";
 import {Tile}    from "./tile";
 import {Player}  from "./player";
+import {Tray}    from "./letterTray";
 
 
 
@@ -47,8 +48,13 @@ export class Board extends jst.Component {
     this.tiles[13][3] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][4] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][6] = new Tile("R", 10, {jitter: true, shadow: true});
+
+    this.players = [new Player(this.app, this.rightWidth, height, {name: "Charlotte", score: 1000, numTiles: 7}),
+                    new Player(this.app, this.rightWidth, height, {name: "Eduard", score: 2, numTiles: 7})];
+    this.letterTray = new Tray(this.app, this);
+    this.tile = new Tile(this.letter, this.size, {jitter: true, shadow: true})
+    this.tilePlacementActive = false;
     this.resize(width, height);
-    this.players = [new Player(this.app, this.rightWidth, this.height, "Charlotte", 1000, 7)];
   }
 
   cssLocal() {
@@ -58,10 +64,12 @@ export class Board extends jst.Component {
         fontFamily: "'DM Mono', monospace",
         display: "grid",
         gridTemplateColumns: `${this.leftWidth}px ${this.boardWidth}px ${this.rightWidth}px`,
-        textAlign: "center"
+        textAlign: "center",
+        marginTop$px: this.cellSize
       },
       leftBar$c: {
-        textAlign: "center"
+        textAlign: "center",
+        marginRight$px: this.cellSize / 2
       },
       rightBar$c: {
         textAlign: "center",
@@ -71,7 +79,8 @@ export class Board extends jst.Component {
         borderColor: "grey",
         borderWidth$px: this.cellSize / 10,
         borderRadius$px: this.cellSize / 10,
-        backgroundColor: "#fcfdd7"
+        backgroundColor: "#fcfdd7",
+        height$px: this.boardHeight - this.cellSize * 2.5
       },
       teable$c: {
         display: "inline-block",
@@ -82,6 +91,7 @@ export class Board extends jst.Component {
         gridTemplateColumns: `repeat(15, ${this.cellSize + 2}px)`,
         gridRowGap$px: 2,
         gridAutoRows: 'minmax(min-content, max-content)',
+        textAlign: "center"
       },
       boardCellTd$c: {
         padding$px: 0
@@ -97,6 +107,10 @@ export class Board extends jst.Component {
         fontSize$px: this.cellSize*0.22,
         textAlign: "center",
         fontWeight: "bold"
+      },
+      boardCell$c$hover: {
+        backgroundColor: this.tilePlacementActive ? "green" : "",
+        cursor: this.tilePlacementActive ? "pointer" : ""
       },
       boardCellText$c: {
         verticalAlign: 'middle',
@@ -142,8 +156,15 @@ export class Board extends jst.Component {
         fontSize$px: this.cellSize*0.25
       },
       '.letterDistributionTable td': {
-        padding$px: [0, 5]
-      }
+        whiteSpace: "nowrap",
+        padding$px: [0, this.cellSize*0.1]
+      },
+      letterTray$c: {
+        textAlign: "center",
+        display: "inline-block",
+        margin: "auto",
+        marginTop$px: this.cellSize / 2
+      },
     };
   }
   
@@ -188,33 +209,58 @@ export class Board extends jst.Component {
         )
       ),
       jst.$div(
-        {cn: "-mainBoard"},
-        rules.board.map(
-          (row, rowIndex) => row.map(
-            (cell, colIndex) => jst.$div(
-              {cn: cellValToClass[cell] + " -boardCell"},
-              cellValToText[cell],
-              jst.$div({cn: "-boardTile"}, this.tiles[colIndex][rowIndex])
+        jst.$div(
+          {cn: "-mainBoard"},
+          rules.board.map(
+            (row, rowIndex) => row.map(
+              (cell, colIndex) => jst.$div(
+                {
+                  cn: cellValToClass[cell] + " -boardCell",
+                  events: {click: e => this.tileToBoard(this.letterTray.selectedTile, colIndex, rowIndex, this.letterTray.index)}
+                },
+                cellValToText[cell],
+                jst.$div({cn: "-boardTile"}, this.tiles[colIndex][rowIndex])
+              )
             )
           )
+        ),
+        jst.$div(
+          {cn: "-letterTray"},
+          this.letterTray
         )
       ),
       jst.$div(
         {cn: "-rightBar"},
-        this.players,
-        player => new Player(this.app, this.rightWidth, this.height, "Eduard", 2, 7)
-      ),
+        this.players
+      )
     );
+  }
+
+  setTilePlacementActive(isActive) {
+    this.tilePlacementActive = isActive;
+    this.refresh();
+  }
+
+  tileToBoard(tile, column, row) {
+    if(this.tilePlacementActive) {
+      this.tiles[column][row] = new Tile(tile.letter, tile.size, {jitter: true, shadow: true});
+      //tile.setSelected(true);
+      tile.setDisabled(true);
+      //this.tilePlacementActive = false;
+      this.letterTray.unSelectTile();
+    }
+    this.refresh();
   }
 
   resize(width, height) {
     this.width        = width;
     this.height       = height;
     this.boardHeight  = height;
-    this.cellSize     = Math.min(width/15*0.55, height/15);
+    this.cellSize     = Math.min(width/15*0.55, height/18);
     this.leftWidth    = this.cellSize * 4;
     this.rightWidth   = this.cellSize * 4;
-    this.boardWidth   = this.cellSize * 16;
+    this.boardWidth   = this.cellSize * 15 + 28;
+    this.letterTray.resize(this.cellSize * 10, this.cellSize * 1.03, this.cellSize);
 
     this.tiles.map(col => col.map(tile => tile && tile.resize(this.cellSize)));
 

@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.6.0",
-    "jayesstee": "*",
+    "jayesstee": "^0.11.5",
     "mqtt": "^3.0.0",
     "uuid": "^3.3.3"
   }

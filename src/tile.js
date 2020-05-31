@@ -1,6 +1,7 @@
 import {jst}     from "jayesstee";
 import css       from "./cssCommon";
 import rules     from "./rules";
+import {Board}   from "./board";
 
 
 
@@ -13,9 +14,12 @@ export class Tile extends jst.Component {
     this.letter         = letter;
     this.shadow         = opts.shadow || false;
     this.jitter         = opts.jitter || false;
+    this.clickCallback  = opts.clickCallback;
     this.leftMargin     = opts.jitter ? this.rand(this.edgeSize/20) : 0;
     this.topMargin      = opts.jitter ? this.rand(this.edgeSize/20) : 0;
     this.rotation       = opts.jitter ? this.rand(3) : 0;
+    this.disabled        = false;
+    this.isSelected     = false;
     this.resize(size);
   }
 
@@ -26,13 +30,16 @@ export class Tile extends jst.Component {
           textAlign: "left",
           borderColor: jst.rgba(0,0,0,0.6),
           borderStyle: "solid",
-          backgroundColor: "#fcfdd7",
+          //backgroundColor: this.disabled ? "grey" : "#fcfdd7",
           zIndex: 10
         },
         subScript$c: {
           position: "absolute",
         },
         letter$c: {
+        },
+        selected$c: {
+          borderColor: "blue"
         }
     };
   }
@@ -46,17 +53,22 @@ export class Tile extends jst.Component {
         width$px: this.edgeSize,
         margin$px: [this.topMargin, 0, 0, this.leftMargin],
         transform: `rotate(${this.rotation}deg)`,
-        boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0
+        boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0,
+        cursor: "pointer",
+        backgroundColor: this.disabled ? "gainsboro" : "#fcfdd7",
+        borderColor: this.disabled ? "grey" : ""
       },
       subScript$c: {
         right$px: this.edgeSize*0.05,
         bottom$px: this.edgeSize*0.05,
         fontSize$px: this.edgeSize*0.3,
-        marginRight$px: this.edgeSize/7
+        marginRight$px: this.edgeSize/7,
+        color: this.disabled ? "grey" : ""
       },
       letter$c: {
         marginLeft$px: this.edgeSize/6,
-        fontSize$px: this.edgeSize*0.7
+        fontSize$px: this.edgeSize*0.7,
+        color: this.disabled ? "grey" : ""
       }
   };
 }
@@ -64,7 +76,8 @@ export class Tile extends jst.Component {
   render() {
     return jst.$div(
       {
-        cn: "-tile --tile"
+        cn: `-tile --tile ${this.isSelected ? "-selected" : ""}`,
+        events: {click: e => this.clicked(e)}
       },
       jst.$div(
         {
@@ -79,6 +92,22 @@ export class Tile extends jst.Component {
           rules.points[this.letter]
       )
     );
+  }
+
+  clicked(e) {
+    if(this.clickCallback && !this.disabled) {
+      this.clickCallback(this);
+    }
+  }
+
+  setSelected(isSelected) {
+    this.isSelected = isSelected;
+    this.refresh();
+  }
+
+  setDisabled(disabled) {
+    this.disabled = disabled;
+    this.refresh();
   }
 
   resize(size) {
@@ -96,5 +125,4 @@ export class Tile extends jst.Component {
       return Math.random() * amount;
     }
   }
-  
 }
