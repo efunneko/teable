@@ -4,7 +4,7 @@
 
 
 
-class MsgStateMachine {
+export class StateMachine {
   constructor(states, startState, options) {
 
     // this.states holds all the valid states in the state machine
@@ -14,6 +14,9 @@ class MsgStateMachine {
 
     for (name in this.states) {
       this.states[name].name = name;
+      if (this.states[name].init) {
+        this.states[name].init(this);
+      }
     }
 
     // The current state
@@ -38,7 +41,7 @@ class MsgStateMachine {
     this.periodicTimers = {};
     this.oneShotTimers = {};
 
-  };
+  }
 
   // Change state function
   changeState(newState) {

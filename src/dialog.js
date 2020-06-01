@@ -1,4 +1,4 @@
-import {jst, JstObject} from "jayesstee";
+import {jst} from "jayesstee";
 
 
 let templates = {
@@ -160,7 +160,7 @@ let cssBits = {
 //
 // Dialog - modal dialog for interacting with the user
 //
-export class DialogInline extends JstObject {
+export class Dialog extends jst.Component {
   constructor(opts) {
     super();
     this.opts      = opts;

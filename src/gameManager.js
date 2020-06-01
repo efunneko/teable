@@ -15,6 +15,7 @@ export class GameManager {
   constructor(app) {
     this.app = app;
 
+    // Setup the local browser storage
     if (window.localStorage) {
       this.storage = window.localStorage;
     }
@@ -22,6 +23,7 @@ export class GameManager {
       console.error("No localstorage available");
     }
 
+    // Create the communicator - this will allow communications between players
     this.communicator = new Communicator(this,
       {
         callbacks:
@@ -33,6 +35,15 @@ export class GameManager {
       }
     );
 
+    // TODO - need to put this into a staged env file
+    let brokerInfo = this.getProp("brokerInfo") || {};
+    brokerInfo.hostname = "mr155kxo97j5y9.messaging.solace.cloud";
+    brokerInfo.port = "8000";
+    brokerInfo.username = "teable";
+    brokerInfo.password = brokerInfo.password || "funwithwill"; // TODO - temp, will be changed
+    this.setProp("brokerInfo", brokerInfo);
+
+    // Setup the state machine
     this.states = {
       start:          new StartState(this),
       connect:        new ConnectState(this),
@@ -41,13 +52,16 @@ export class GameManager {
       playing:        new PlayingState(this),
       endGame:        new EndGameState(this)
     };
-
     this.stateMachine = new StateMachine(this.states, "start", {});
+
+    // Check for a game in progress
+    this._loadGameState();
 
   }
 
   event(name, params) {
-    this.sm.invokeEvent(name, params);
+    console.log("got event:", name, params);
+    this.stateMachine.invokeEvent(name, params);
   }
 
   // Takes in a "name" or ["array", "of", "names"] to choose the property to set
@@ -58,14 +72,14 @@ export class GameManager {
       name = names.shift();
       if (names.length) {
         let obj = this._getRawProp(name);
-        let origObj = obj;
-        if (!obj || typeof(obj) === "object") {
+        if (!obj || obj === null || typeof(obj) !== "object") {
           obj = {};
         }
+        let origObj = obj;
         let key;
         while (names.length) {
           key = names.shift();
-          if (typeof (obj) !== "object" || typeof (obj[key]) === "undefined") {
+          if (typeof (obj[key]) !== "object" || typeof (obj[key]) === "undefined" || obj[key] === null) {
             obj[key] = {};
           }
 
@@ -93,7 +107,8 @@ export class GameManager {
       let obj = val;
       while (names.length) {
         let key = names.shift();
-        if (typeof (obj) !== "object" || typeof (obj[key]) === "undefined") {
+        if (obj === undefined || obj === null || 
+            typeof (obj) !== "object" || typeof (obj[key]) === "undefined") {
           return undefined;
         }
         obj = obj[key];
@@ -102,6 +117,18 @@ export class GameManager {
     }
 
     return this._getRawProp(names);
+  }
+
+  _loadGameState() {
+    this.gameState = this.getProp("gameState");
+
+    if (!this.gameState) {
+      this.gameState = {
+        gameInProgress: false
+      }
+    }
+    //if (this.gameState && )
+
   }
 
   _setRawProp(name, val) {
@@ -124,6 +151,9 @@ export class GameManager {
       }
       return obj;
     }
+    if (val === null) {
+      val = undefined;
+    }
     return val;
   }
 
@@ -135,13 +165,30 @@ export class GameManager {
 
   }
 
+  promptForPassword() {
+    console.log("prompting for password");
+    return this.app.dialog({
+      title: "Password",
+      fields: [
+        {
+          name: "password",
+          label: "password",
+          type: "password"
+        }
+      ]
+    }).then(result => result.password);
+  }
+
 }
 
 class State {
   constructor(game) {
     this.game = game;
-    this.sm   = game.stateMachine;
     this.comm = game.communicator;
+  }
+
+  init(sm) {
+    this.sm = sm;
   }
 }
 
@@ -156,7 +203,7 @@ class StartState extends State {
       this.sm.changeState("connect");
     }
     else {
-      this.promptForPassword()
+      this.game.promptForPassword()
         .then(password => {
           this.game.setProp(["brokerInfo", "password"], password);
           this.sm.changeState("connect");
@@ -176,7 +223,16 @@ class ConnectState extends State {
       this.sm.changeState("start");
     }
     else {
-      this.communicator.connect(brokerInfo);
+      this.comm.connect(brokerInfo);
+    }
+  }
+
+  eventconnect() {
+    if (this.game.gameState.gameInProgress) {
+      this.sm.changeState("playing");
+    }
+    else {
+      this.sm.changeState("chooseGame");
     }
   }
 
@@ -185,6 +241,10 @@ class ConnectState extends State {
 class ChooseGameState extends State {
   constructor(game) {
     super(game);
+  }
+
+  enterState(lastState) {
+    console.log("Choosing game");
   }
 
 }

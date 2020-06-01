@@ -2,8 +2,8 @@ const uuidv4 = require('uuid/v4');
 const mqtt   = require('mqtt');
 
 export class Communicator {
-  constructor(app, opts) {
-    this.app         = app;
+  constructor(parent, opts) {
+    this.parent      = parent;
     this.uuid        = uuidv4();
     this.topicPrefix = `minecraft/browser/${this.uuid}/`;
     this.replyTo     = this.topicPrefix + "reply";
@@ -29,25 +29,33 @@ export class Communicator {
                                {username: brokerInfo.username,
                                 password: brokerInfo.password});
  
-    console.log("After connect");
-    this.broker.on('connect', () => {
-      console.log("Connected to broker with mode ", this.mode);
-      this.broker.subscribe(`minecraft/browser/all/info`, err => {});
-      this.broker.subscribe(this.replyTo, err => {
-        if (err) {
-          console.log("Subscribe error: ", err);
-        }
-        else {
-          this.onConnectionComplete();
-        }
-      });
+    this.broker.on('connect', (connAck) => {
+      this.parent.event('connect', {connAck});
     });
-    
+     
     this.broker.on('message', (topic, message) => {
-      this.onMessage(topic, message);
+      this.parent.event('message', {topic, message});
+    });
+
+    this.broker.on('close', () => {
+      this.parent.event('close', {});
+    });
+
+    this.broker.on('offline', () => {
+      // Send close for this
+      this.parent.event('close', {});
+    });
+
+    this.broker.on('disconnect', (packet) => {
+      this.parent.event('disconnect', {packet});
+    });
+
+    this.broker.on('reconnect', (packet) => {
+      this.parent.event('reconnect', {packet});
     });
 
     this.broker.on('error', (error) => {
+      this.parent.event('error', {message: error.message});
       console.log("MQTT error:", error.message);
     });
     
@@ -60,7 +68,7 @@ export class Communicator {
   }
 
   onConnectionComplete() {
-    this.app.onBrokerConnection();
+    this.parent.onBrokerConnection();
   }
 
   onMessage(topic, message) {

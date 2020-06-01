@@ -4,6 +4,7 @@ import {Splash}                from "./splash";
 import {ChooseGame}            from "./chooseGame";
 import {WaitingForPlayers}     from "./waitingForPlayers";
 import {GameManager}           from "./gameManager";
+import {Dialog}                from "./dialog";
 
 const appStates = {
   BeforeConnect:     1,
@@ -25,6 +26,8 @@ export class App extends jst.Component {
           
     this.width              = window.innerWidth;
     this.height             = window.innerHeight;
+
+    this.currDialog         = undefined;
       
     this.body               = new Body(this, this.width, this.height - 150);
     this.splash             = new Splash(this);
@@ -32,14 +35,13 @@ export class App extends jst.Component {
     this.gameManager        = new GameManager(this);
     this.waitingForPlayers  = new WaitingForPlayers(this);
 
-    this.currDialog         = undefined;
-
     // Listen for window resize events
     window.onresize = e => this.resize();
 
   }
 
   render() {
+    console.log("dialog", this.currDialog);
     return jst.$div(
       {id: "app"},
       // Very poor-man's router - consider replaying with proper navigation
@@ -92,30 +94,29 @@ export class App extends jst.Component {
     if (this.currDialog) {
       throw new Error("Only one dialog at a time allowed");
     }
-    this.currDialog = new DialogInline(opts);
+    this.currDialog = new Dialog(opts);
 
     let promise = this.currDialog.promise
       .then(
         result => {
+          console.log("Got dialog result:", result)
           this.currDialog = undefined;
           this.refresh();
           return result;
         }
       )
       .catch(err => {
+        console.log("Got dialog error:", err);
         this.currDialog.destroy();
         this.currDialog = undefined;
         this.refresh();
       });
+    console.log("Created dialog", opts, this.currDialog)
     this.refresh();
     return promise;
   }
 
   connect(brokerInfo) {
-    brokerInfo.hostname = "mr155kxo97j5y9.messaging.solace.cloud";
-    brokerInfo.port     = "8000";
-    brokerInfo.username = "teable";
-    brokerInfo.password = "funwithwill"; // TODO - temp, will be changed
     this.setBrokerInfo(brokerInfo);
     this.gameManager.connect(brokerInfo);
   }
