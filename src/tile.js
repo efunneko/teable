@@ -47,11 +47,12 @@ export class Tile extends jst.Component {
   cssInstance() {
     return {
       tile$c: {
+        fontFamily: "'DM Mono', monospace",
         borderWidth$px: this.borderSize,
         borderRadius$px: this.size/20,
         height$px: this.edgeSize,
         width$px: this.edgeSize,
-        margin$px: [this.topMargin, 0, 0, this.leftMargin],
+        //margin$px: [this.topMargin, 0, 0, this.leftMargin],
         transform: `rotate(${this.rotation}deg)`,
         boxShadow$px: this.shadow ? [2, 2, 5, jst.rgba(0, 0, 0, 0.3)] : 0,
         cursor: "pointer",
@@ -63,12 +64,12 @@ export class Tile extends jst.Component {
         bottom$px: this.edgeSize*0.05,
         fontSize$px: this.edgeSize*0.3,
         marginRight$px: this.edgeSize/7,
-        color: this.disabled ? "grey" : ""
+        color: this.disabled ? "grey" : "black"
       },
       letter$c: {
         marginLeft$px: this.edgeSize/6,
         fontSize$px: this.edgeSize*0.7,
-        color: this.disabled ? "grey" : ""
+        color: this.disabled ? "grey" : "black"
       }
   };
 }

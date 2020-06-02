@@ -21,8 +21,8 @@ export class App extends jst.Component {
     this.alerts             = [];
     this.brokerInfo         = undefined;
     this.gameSelected       = false;
-    //this.state              = appStates.BeforeConnect;
-    this.state              = appStates.Playing;
+    this.state              = appStates.BeforeConnect;
+    //this.state              = appStates.Playing;
           
     this.width              = window.innerWidth;
     this.height             = window.innerHeight;
@@ -30,7 +30,7 @@ export class App extends jst.Component {
     this.currDialog         = undefined;
       
     this.body               = new Body(this, this.width, this.height - 150);
-    this.splash             = new Splash(this);
+    this.splash             = new Splash(this, this.width, this.height);
     this.chooseGame         = new ChooseGame(this);
     this.gameManager        = new GameManager(this);
     this.waitingForPlayers  = new WaitingForPlayers(this);

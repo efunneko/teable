@@ -1,15 +1,20 @@
 import {jst}    from "jayesstee";
 import css      from "./cssCommon";
-
+import { Tile } from "./tile";
 
 
 //
 // Splash - Renders and manages the initial splash screen
 //
 export class Splash extends jst.Object {
-  constructor(app) {
+  constructor(app, width, height) {
     super();
-    this.app          = app;
+    this.app = app;
+    this.tileSize = Math.min(width, height)/10;
+    this.tiles = "TEABLE".split("").map(
+      letter => new Tile(letter, this.tileSize, 
+                         {jitter: true, shadow: true}
+    ));
   }
 
   cssLocal() {
@@ -44,20 +49,9 @@ export class Splash extends jst.Object {
         color: css.textOnDark
       },
       logo$c: {
-        display: "inline-block",
-        fontFamily: ["Times New Roman,", "Times"],
-        fontSize$px:  70,
-        color: css.solaceGreen
-      },
-      ping$c: {
-        display: "inline-block",
-        backgroundColor: css.solaceGreen,
-        height$px: 25,
-        width$px: 25,
-        borderRadius$px: 25,
-        marginLeft$px: 5,
-        // hack
-        marginBottom$px: -1
+        display: "grid",
+        gridTemplateColumns: "repeat(6, 1fr)",
+        gridColumnGap: this.tileSize/4
       },
       form$c: {
         fontSize$px: 17,
@@ -98,60 +92,21 @@ export class Splash extends jst.Object {
       
     };
   }
-  
-  
+    
   render() {
     return jst.$div(
       {cn: "-splash"},
       jst.$div(
         {cn: "-splashInner"},
         jst.$div(
-          {cn: "-title"},
-          this.app.title
+          {cn: "-title"}
         ),
-
         jst.$div(
-          {cn: "-dialog"},
-          jst.$form(
-            {cn: "-form", name: "dialog"},
-            jst.$fieldset(
-              {cn: "-fieldset"},
-              jst.$div(
-                {cn: "-label"},
-                "Name"
-              ),
-              jst.$input({cn: "-input",
-                type: "username",
-                name: "username"
-              }),
-              jst.$div(
-                {cn: "-label"},
-                "Password"
-              ),
-              jst.$input({cn: "-input",
-                type: "password",
-                name: "password",
-                events: {
-                  keydown: e => {if (e.keyCode == 13) e.preventDefault()}
-                }
-              })
-            ),
-            jst.$div(
-              {cn: "-connectButton", events: {click: e => this.connect(e)}},
-              "Connect"
-            )
-          )
+          {cn: "-logo"},
+          this.tiles
         )
       )
     );
   }
 
-  connect(e) {
-    console.log("Called splash.connect")
-    e.preventDefault();
-    let vals = this.getFormValues("dialog");
-    if (vals && vals.password) {
-      this.app.connect(vals);
-    }
-  }
 }
