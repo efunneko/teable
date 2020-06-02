@@ -29,9 +29,10 @@ const subScript = [1, 3];
 // Board - Renders and manages the playing surface
 //
 export class Board extends jst.Component {
-  constructor(app, width, height) {
+  constructor(app, game, width, height) {
     super();
     this.app          = app;
+    this.game         = game;
     this.tiles        = new Array(15).fill().map(col => new Array(15).fill());
 
     this.tiles[5][5]  = new Tile("C", 10, {jitter: true, shadow: true});
@@ -49,8 +50,8 @@ export class Board extends jst.Component {
     this.tiles[13][4] = new Tile("N", 10, {jitter: true, shadow: true});
     this.tiles[13][6] = new Tile("R", 10, {jitter: true, shadow: true});
 
-    this.players = [new Player(this.app, this.rightWidth, height, {name: "Charlotte", score: 1000, numTiles: 7}),
-                    new Player(this.app, this.rightWidth, height, {name: "Eduard", score: 2, numTiles: 7})];
+    this.players = [new Player(this.app, this.game, this.rightWidth, height, {name: "Charlotte", score: 1000, numTiles: 7}),
+                    new Player(this.app, this.game, this.rightWidth, height, {name: "Eduard", score: 2, numTiles: 7})];
     this.letterTray = new Tray(this.app, this);
     this.tile = new Tile(this.letter, this.size, {jitter: true, shadow: true})
     this.tilePlacementActive = false;

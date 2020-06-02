@@ -4,13 +4,13 @@ import { Tile } from "./tile";
 
 
 //
-// Splash - Renders and manages the initial splash screen
+// StartPage - Renders and manages the initial startPage screen
 //
-export class Splash extends jst.Object {
+export class StartPage extends jst.Object {
   constructor(app, width, height) {
     super();
     this.app = app;
-    this.tileSize = Math.min(width, height)/10;
+    this.resize(width, height);
     this.tiles = "TEABLE".split("").map(
       letter => new Tile(letter, this.tileSize, 
                          {jitter: true, shadow: true}
@@ -19,7 +19,7 @@ export class Splash extends jst.Object {
 
   cssLocal() {
     return {
-      splash$c: {
+      startPage$c: {
         position: "fixed",
         top$px: 0,
         left$px: 0,
@@ -31,7 +31,7 @@ export class Splash extends jst.Object {
         padding$px: 5,
         textAlign: "center"
       },
-      splashInner$c: {
+      startPageInner$c: {
         paddingTop$vh: 25,
         width$px: 600,
         margin: "auto"
@@ -95,9 +95,9 @@ export class Splash extends jst.Object {
     
   render() {
     return jst.$div(
-      {cn: "-splash"},
+      {cn: "-startPage"},
       jst.$div(
-        {cn: "-splashInner"},
+        {cn: "-startPageInner"},
         jst.$div(
           {cn: "-title"}
         ),
@@ -107,6 +107,14 @@ export class Splash extends jst.Object {
         )
       )
     );
+  }
+
+  resize(width, height) {
+    this.tileSize = Math.min(width, height)/10;
+    
+    if (this.tiles) {
+      this.tiles.forEach(tile => tile.resize(this.tileSize));
+    }
   }
 
 }

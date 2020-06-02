@@ -7,14 +7,22 @@ import css       from "./cssCommon";
 // Player
 //
 export class Player extends jst.Component {
-  constructor(app, width, height, opts = {}) {
+  constructor(app, game, width, height, opts) {
     super();
     this.app          = app;
+    this.game         = game;
     this.height       = height;
     this.width        = width;
-    this.name         = opts.name;
-    this.score        = opts.score;
-    this.tiles        = opts.numTiles;
+    this.isMe         = opts.isMe ? true : false;
+
+    if (this.isMe) {
+      this._loadMyPlayer();
+    }
+    else {
+      this.name = opts.name;
+      this.score = opts.score || 0;
+      this.numTiles = opts.numTiles;
+    }
   }
 
   cssLocal() {
@@ -55,4 +63,36 @@ export class Player extends jst.Component {
     this.height = height;
     this.refresh();
   }
+
+  _loadMyPlayer() {
+    this.myPlayer = this.game.getProp("myPlayer");
+
+    if (!this.myPlayer) {
+      // Need to get some input
+      this.app.dialog({
+        title: "Player Information",
+        fields: {
+          name: name,
+          label: "Your Display Name"
+        }
+      }).then(
+        result => {
+          this.name = result.name;
+          this.stats = Object.assign(this.stats, result.stats);
+          this.uuid = uuidv4("teable");
+        }
+      );
+
+    }
+
+  }
+
+  _saveMyPlayer() {
+    this.game.setProp("myPlayer", {
+      name: this.name,
+      stats: this.stats,
+      uuid: this.uuid,
+    });    
+  }
+
 }

@@ -1,6 +1,6 @@
 import {jst}                   from "jayesstee";
 import {Body}                  from "./body";
-import {Splash}                from "./splash";
+import {StartPage}             from "./startPage";
 import {ChooseGame}            from "./chooseGame";
 import {WaitingForPlayers}     from "./waitingForPlayers";
 import {GameManager}           from "./gameManager";
@@ -29,10 +29,12 @@ export class App extends jst.Component {
 
     this.currDialog         = undefined;
       
-    this.body               = new Body(this, this.width, this.height - 150);
-    this.splash             = new Splash(this, this.width, this.height);
-    this.chooseGame         = new ChooseGame(this);
     this.gameManager        = new GameManager(this);
+
+    this.body               = new Body(this, this.gameManager, 
+                                       this.width, this.height - 150);
+    this.startPage          = new StartPage(this, this.width, this.height);
+    this.chooseGame         = new ChooseGame(this);
     this.waitingForPlayers  = new WaitingForPlayers(this);
 
     // Listen for window resize events
@@ -53,7 +55,7 @@ export class App extends jst.Component {
   }
 
   renderBeforeConnect() {
-    return this.splash;
+    return this.startPage;
   }
 
   renderChooseGame() {
@@ -79,6 +81,7 @@ export class App extends jst.Component {
     console.log(this.width, this.height);
     //this.header.resize(this.width, 150);
     this.body.resize(this.width, this.height - 150);
+    this.startPage.resize(this.width, this.height);
     this.refresh();
   }
 
